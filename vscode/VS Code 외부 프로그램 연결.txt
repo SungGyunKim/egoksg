@@ -1,0 +1,19 @@
+[ cmder 연결 방법 ]
+    1. VS Code 프로그램에서 ctrl + ,를 눌러 설정 페이지를 연다.
+    2. 우측 상단에 있는 '설정 열기(JSON)'을 눌러 setting.json을 연다.
+    3. 아래 옵션을 추가한다.
+    "terminal.integrated.profiles.windows": {
+        "Cmder": {
+            "path": "${env:windir}\\System32\\cmd.exe",
+            "args": ["/k", "C:\\cmder\\vendor\\bin\\vscode_init.cmd"]
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Cmder"
+    4. F1을 눌러 terminal: select default profile 검색하고, 기본 터미널 프로필을 Cmder로 설정
+    5. 하단 터미널 영역 우측 상단에 ▽을 눌러 Cmder을 연다.
+
+    참고) https://inpa.tistory.com/entry/VScode-%F0%9F%92%BD-cmder-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94%EB%B2%95
+
+[ 에디터 폰트 사이즈 조절 - 마우스 훨 ]
+    1. VS Code 프로그램에서 ctrl + ,를 눌러 설정 페이지를 연다.
+    2. Setting > User > Text Editor > Mouse Wheel Zoom

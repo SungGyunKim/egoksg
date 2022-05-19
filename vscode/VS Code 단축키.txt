@@ -1,10 +1,30 @@
-[ VS Code 단축키 ]
-[ VS Code 단축키 ]
-편집(E) > 잘라내기				    Ctrl + X
-편집(E) > 파일에서 찾기             Ctrl + <Shift> + F
-편집(E) > 파일에서 바꾸기           Ctrl + <Shift> + H
+[ 툴 ]
+ctrl + P                파일 이동
+ctrl + B                왼쪽 창 열기/닫기
+ctrl + K + S            단축키 찾기
+ctrl + `                터미널 켜기
+ctrl + shift + P        커맨트 팔레트
+Ctrl + X                편집(E) > 잘라내기				    
+Ctrl + <Shift> + F      편집(E) > 파일에서 찾기             
+Ctrl + <Shift> + H      편집(E) > 파일에서 바꾸기           
 
-선택 영역(S) > 위에 줄 복사         <Shift> + <Alt> + UpArrow
-선택 영역(S) > 위에 줄 복사         <Shift> + <Alt> + UpArrow
+[ 소스 ]
+f12                     해당 파일로 이동
+alt  + f12              연결된 소스 미리보기
+ctrl + shfit + R        리팩토리
+ctrl + D                rename
+f2                      rename
+ctrl + U                undo 커서
+ctrl + L                라인 블럭
+ctrl + X                라인 잘라내기
+ctrl + K                라인 삭제
+alt + ↑                 라인 위로 이동
+alt + ↓                 라인 아래로 이동
+alt + shift + ↑         라인 위로 복사
+alt + shift + ↓         라인 아래로 복사
+alt + click             멀티 커서
+ctrl + ←                단어 좌로 이동
+ctrl + →                단어 우로 이동
+ctrl + Enter            라인 중간에 영향 없이 다음 줄로 엔터
 
-보기(V) > 명령어 팔레트...			Ctrl + <Shift> + P
+https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf

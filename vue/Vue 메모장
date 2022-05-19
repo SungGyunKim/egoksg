@@ -1,0 +1,14 @@
+1. Vue Scaffolding Project 설치
+    npm init vue@latest
+
+2. 프로젝트 이동
+    cd vue3-project
+
+3. 프로젝트 의존성 모듈 설치(package.json)
+    npm install
+
+4. ESLint 실행
+    npm run lint
+
+5. 실행 (package.json > scripts)
+    npm run dev
