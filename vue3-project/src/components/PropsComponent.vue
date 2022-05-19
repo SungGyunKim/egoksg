@@ -1,6 +1,6 @@
 
 <template>
-  {{ $props }}
+  <div>{{ $props }}</div>
 </template>
 
 <script>
@@ -45,9 +45,11 @@ export default {
     },
     // Custom validator function
     propF: {
+      type: String,
       validator(value) {
-        return ["success", "warning", "danger"].includes(value);
-      },
+        // The value must match one of these strings
+        return ['success', 'warning', 'danger'].includes(value)
+      }
     },
     // Function with a default value
     propG: {

@@ -22,6 +22,11 @@ const router = createRouter({
       name: "BuiltInDirectivesView",
       component: () => import("../views/BuiltInDirectivesView.vue"),
     },
+    {
+      path: "/ComponentView",
+      name: "ComponentView",
+      component: () => import("../views/ComponentView.vue"),
+    },
   ],
 });
 

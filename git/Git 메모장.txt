@@ -21,10 +21,10 @@
         git commit -m "comment"
 
     8. 원격 Repository 추가
-        git remote add origin https://github.com/SungGyunKim/memo.git
+        git remote add origin https://github.com/SungGyunKim/egoksg.git
 
-    9. 변경이력을 Remote Repository에 있는 master branch에 전송
-        git push origin master
+    9. 변경이력을 Remote Repository에 있는 main branch에 전송
+        git push origin main
 
 [ Git branch create ]
     1. 현재 branch 확인
