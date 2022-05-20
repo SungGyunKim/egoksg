@@ -1,4 +1,3 @@
-
 <template>
   <div>{{ $props }}</div>
 </template>
@@ -15,7 +14,7 @@ export default {
    *    propA: 10,
    *    propB: "egoksg"
    *   }
-   * 
+   *
    *   <PropsComponent v-bind="obj"></PropsComponent>
    * - 부모로 부터 받은 props는 변경이 불가능하다.
    */
@@ -48,8 +47,8 @@ export default {
       type: String,
       validator(value) {
         // The value must match one of these strings
-        return ['success', 'warning', 'danger'].includes(value)
-      }
+        return ["success", "warning", "danger"].includes(value);
+      },
     },
     // Function with a default value
     propG: {
@@ -72,5 +71,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

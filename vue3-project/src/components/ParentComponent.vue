@@ -1,17 +1,51 @@
 <script setup>
 import PropsComponent from "@/components/PropsComponent.vue";
-import EventComponent from "@/components/EventComponent.vue";
+import EventComponent1 from "@/components/EventComponent1.vue";
+import EventComponent2 from "@/components/EventComponent2.vue";
+import EventComponent3 from "@/components/EventComponent3.vue";
 </script>
 
 <template>
   <div>
     <h1>PropsComponent</h1>
-    <PropsComponent v-bind:propC="1"></PropsComponent>
-    <PropsComponent v-bind='{ "propC":2, "propD": 200, "propE": { "message": "world" }, "propH": true }'></PropsComponent>
-    <PropsComponent v-bind:propC="3" v-bind:propD="300" v-bind:propE='{ "message": "vue" }' propH></PropsComponent>
-    <PropsComponent v-bind:propC="4" v-bind:propF="warning"></PropsComponent>
+    <PropsComponent v-bind:propC="'1'"></PropsComponent>
+    <PropsComponent
+      v-bind="{
+        propC: '2',
+        propD: 200,
+        propE: { message: 'world' },
+        propH: true,
+      }"
+    ></PropsComponent>
+    <PropsComponent
+      v-bind:propC="'3'"
+      v-bind:propD="300"
+      v-bind:propE="{ message: 'vue' }"
+      propH
+    ></PropsComponent>
+    <PropsComponent
+      v-bind:propC="'4'"
+      v-bind:propF="'critical'"
+    ></PropsComponent>
+
     <h1>EventComponent</h1>
-    <EventComponent v-bind="$data" @submit="onSubmit" ></EventComponent>
+    <h3>EventComponent - bind</h3>
+    <EventComponent1 v-bind="$data" @submit="onSubmit"></EventComponent1>
+    <h3>EventComponent - model</h3>
+    <EventComponent2
+      v-model="$data"
+      v-model:email="email"
+      v-model:password="password"
+      @submit="onSubmit"
+    ></EventComponent2>
+    {{ `email: ${email}, password: ${password}` }}
+    <h3>EventComponent - model modifiers</h3>
+    <EventComponent3
+      v-model:email.toLowerCase="email"
+      v-model:password="password"
+    ></EventComponent3>
+
+    <h1>Fallthrough Attributes</h1>
   </div>
 </template>
 
@@ -21,16 +55,14 @@ export default {
     return {
       email: "egoksg@naver.com",
       password: "111111",
-    }
+    };
   },
   methods: {
-    onSubmit({ email, password}) {
-      console.log(`email: ${email}, password: ${password}`)
-    }
-  }
-}
+    onSubmit({ email, password }) {
+      console.log(`email: ${email}, password: ${password}`);
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

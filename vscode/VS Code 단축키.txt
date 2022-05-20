@@ -17,7 +17,7 @@ f2                      rename
 ctrl + U                undo 커서
 ctrl + L                라인 블럭
 ctrl + X                라인 잘라내기
-ctrl + K                라인 삭제
+Ctrl + <Shift> + K      라인 삭제
 alt + ↑                 라인 위로 이동
 alt + ↓                 라인 아래로 이동
 alt + shift + ↑         라인 위로 복사

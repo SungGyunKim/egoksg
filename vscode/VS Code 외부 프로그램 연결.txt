@@ -17,3 +17,13 @@
 [ 에디터 폰트 사이즈 조절 - 마우스 훨 ]
     1. VS Code 프로그램에서 ctrl + ,를 눌러 설정 페이지를 연다.
     2. Setting > User > Text Editor > Mouse Wheel Zoom
+
+[ Default End of Line Sequence ]
+    1. VS Code 프로그램에서 ctrl + ,를 눌러 설정 페이지를 연다.
+    2. files.eol을 검색해 '\n'으로 변경한다.
+
+[ Tab key Space Size ]
+    1. VS Code 프로그램에서 ctrl + ,를 눌러 설정 페이지를 연다.
+    2. tabSize를 검색하고 2로 설정한다.
+    3. editor.insertSpaces를 검색하고 true로 설정한다.
+    4. editor.detectIndentation를 검색하고 false로 설정한다.
