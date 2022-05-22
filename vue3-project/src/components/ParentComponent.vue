@@ -1,4 +1,5 @@
 <script setup>
+import LifecycleComponent from "@/components/LifecycleComponent.vue";
 import PropsComponent from "@/components/PropsComponent.vue";
 import EventComponent1 from "@/components/EventComponent1.vue";
 import EventComponent2 from "@/components/EventComponent2.vue";
@@ -7,6 +8,9 @@ import EventComponent3 from "@/components/EventComponent3.vue";
 
 <template>
   <div>
+    <h1>LifecycleComponent</h1>
+    <LifecycleComponent></LifecycleComponent>
+
     <h1>PropsComponent</h1>
     <PropsComponent v-bind:propC="'1'"></PropsComponent>
     <PropsComponent
