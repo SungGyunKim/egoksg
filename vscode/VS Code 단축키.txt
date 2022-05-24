@@ -12,6 +12,7 @@ Ctrl + <Shift> + H      편집(E) > 파일에서 바꾸기
 f12                     해당 파일로 이동
 alt  + f12              연결된 소스 미리보기
 ctrl + shfit + R        리팩토리
+ctrl + shfit + L        특정 문자열 한 번에 수정
 ctrl + D                rename
 f2                      rename
 ctrl + U                undo 커서
