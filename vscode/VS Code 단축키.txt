@@ -1,18 +1,31 @@
 [ 툴 ]
-ctrl + P                파일 이동
+ctrl + P                파일로 이동...
 ctrl + B                왼쪽 창 열기/닫기
-ctrl + K + S            단축키 찾기
-ctrl + `                터미널 켜기
+ctrl + `                터미널 창 열기/닫기
+ctrl + k s              단축키 찾기
 ctrl + shift + P        커맨트 팔레트
 Ctrl + X                편집(E) > 잘라내기				    
 Ctrl + <Shift> + F      편집(E) > 파일에서 찾기             
 Ctrl + <Shift> + H      편집(E) > 파일에서 바꾸기           
 
 [ 소스 ]
+ctrl + shift + [        소스 코드 접기
+ctrl + shift + ]        소스 코드 펼치기
+ctrl + shift + o        편집기에서 기호로 이동...
+ctrl + shift + .        경로/소스 네비게이터 이동
+ctrl + shift + \        대괄호로 이동
+ctrl + [                내어쓰기
+ctrl + ]                들여쓰기
+f8                      파일의 다음 문제로 이동 (오류, 경고, 정보)
+shift + f8              파일의 이전 문제로 이동 (오류, 경고, 정보)
+ctrl + k d              파일: 활성 파일을 저장된 파일과 비교
+alt + shift + .         자동 수정...
+f3                      다음 찾기
+shift + f3              이전 찾기
 f12                     해당 파일로 이동
 alt  + f12              연결된 소스 미리보기
-ctrl + shfit + R        리팩토리
-ctrl + shfit + L        특정 문자열 한 번에 수정
+ctrl + shift + R        리팩토리
+ctrl + shift + L        일치 항목 찾기의 모든 항목 선택
 ctrl + D                rename
 f2                      rename
 ctrl + U                undo 커서

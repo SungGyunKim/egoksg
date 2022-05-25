@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
+      path: "/FormInputBindingView",
+      name: "FormInputBindingView",
+      component: () => import("../views/FormInputBindingView.vue"),
+    },
+    {
       path: "/BuiltInDirectivesView",
       name: "BuiltInDirectivesView",
       component: () => import("../views/BuiltInDirectivesView.vue"),

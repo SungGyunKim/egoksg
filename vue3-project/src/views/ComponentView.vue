@@ -7,9 +7,7 @@ import ParentComponent from "@/components/ParentComponent.vue";
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style></style>
