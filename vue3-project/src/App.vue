@@ -23,6 +23,8 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/FormInputBindingView">FormInputBindingView</RouterLink>
         <RouterLink to="/ComponentView">ComponentView</RouterLink>
         <RouterLink to="/ReusabilityView">ReusabilityView</RouterLink>
+        <RouterLink to="/WatchersView">WatchersView</RouterLink>
+        <RouterLink to="/TemplateRefsView">TemplateRefsView</RouterLink>
       </nav>
     </div>
   </header>
