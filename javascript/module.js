@@ -1,4 +1,7 @@
 export function firstModule() {
+    console.log("[firstModule] import.meta : ", import.meta)
+    console.log("[firstModule] import.meta.url : ", import.meta.url)
+    console.log("[firstModule] ", new URL("./src", import.meta.url))
     return "called firstModule!!!";
 };
 

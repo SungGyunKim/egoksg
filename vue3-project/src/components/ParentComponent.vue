@@ -30,6 +30,8 @@ import EventComponent3 from "@/components/EventComponent3.vue";
     <PropsComponent
       v-bind:propC="'4'"
       v-bind:propF="'critical'"
+      v-model:propI.capitalize.toLowerCase="email"
+      title="'non-prop'"
     ></PropsComponent>
 
     <h1>EventComponent</h1>
@@ -45,6 +47,7 @@ import EventComponent3 from "@/components/EventComponent3.vue";
     {{ `email: ${email}, password: ${password}` }}
     <h3>EventComponent - model modifiers</h3>
     <EventComponent3
+      v-model.capitalize="email"
       v-model:email.toLowerCase="email"
       v-model:password="password"
     ></EventComponent3>

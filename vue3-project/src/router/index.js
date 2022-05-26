@@ -48,6 +48,16 @@ const router = createRouter({
       name: "TemplateRefsView",
       component: () => import("../views/TemplateRefsView.vue"),
     },
+    {
+      path: "/SlotsView",
+      name: "SlotsView",
+      component: () => import("../views/SlotsView.vue"),
+    },
+    {
+      path: "/ProvideinjectView",
+      name: "ProvideinjectView",
+      component: () => import("../views/ProvideinjectView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },

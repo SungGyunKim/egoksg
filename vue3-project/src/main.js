@@ -16,5 +16,6 @@ app.use(i18nPlugin, {
   },
 });
 app.directive(focusDirective.name, focusDirective.hooks);
+app.provide(/* key */ "message-app", /* value */ "App hello!");
 
 app.mount("#app");

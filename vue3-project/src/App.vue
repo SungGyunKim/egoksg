@@ -19,12 +19,16 @@ import HelloWorld from "@/components/HelloWorld.vue";
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/BuiltInDirectivesView">BuiltInDirectivesView</RouterLink>
+        <RouterLink to="/BuiltInDirectivesView"
+          >BuiltInDirectivesView</RouterLink
+        >
         <RouterLink to="/FormInputBindingView">FormInputBindingView</RouterLink>
         <RouterLink to="/ComponentView">ComponentView</RouterLink>
         <RouterLink to="/ReusabilityView">ReusabilityView</RouterLink>
         <RouterLink to="/WatchersView">WatchersView</RouterLink>
         <RouterLink to="/TemplateRefsView">TemplateRefsView</RouterLink>
+        <RouterLink to="/SlotsView">SlotsView</RouterLink>
+        <RouterLink to="/ProvideinjectView">ProvideinjectView</RouterLink>
       </nav>
     </div>
   </header>

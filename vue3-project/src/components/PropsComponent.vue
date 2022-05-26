@@ -1,9 +1,17 @@
 <template>
-  <div>{{ $props }}</div>
+  <div>
+    <h4>[ $props ]</h4>
+    <div style="padding-left: 20px">{{ $props }}</div>
+    <h4>[ $attrs ]</h4>
+    <div style="padding-left: 20px">{{ $attrs }}</div>
+    -----------------------------------------------
+  </div>
 </template>
 
 <script>
 export default {
+  // 자식 노드에게 non-prop 속성($attr)을 상속하지 않는다.
+  inheritAttrs: false,
   /**
    * - props는 부모 컴포넌트에서 해당 컴포넌트로 넘겨질 데이터를 정의하는 곳이다.
    * - 부모 컴포너트에서 props를 접근할 때, kebab-case를 사용하여 접근한다.
@@ -38,7 +46,7 @@ export default {
       type: Object,
       // type이 Object이거나 Array일 경우, default function의 return 값이 기본값이 된다.
       default(rawProps) {
-        console.log(["MyComponent rawProps : ", rawProps]);
+        console.log("[PropsComponent] propE - rawProps : ", rawProps);
         return { message: "hello" };
       },
     },
@@ -63,10 +71,20 @@ export default {
     propH: {
       type: Boolean,
     },
+    propI: String,
+    propIModifiers: { default: () => ({}) },
   },
-  // Composition API
-  setup(props, { attrs, slots, emit, expose }) {
-    console.log(props);
+  setup(props, context) {
+    // props나 emits에 정의되어 있지 않는 prop를 non-prop이라고 한다. ex) title, class, style ...
+    // <template></template>에서는 $attr를 통해 접근할 수 있다.
+    console.log("[PropsComponent] non-prop - ", context.attrs);
+
+    if (props.propIModifiers.capitalize) {
+      console.log(
+        "[PropsComponent] props.propIModifiers - ",
+        props.propIModifiers
+      );
+    }
   },
 };
 </script>

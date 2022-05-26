@@ -79,8 +79,8 @@ const submitForm = () => {
   });
 };
 
-console.log(props.modelModifiers); // { capitalize: true }
-console.log(props.emailModifiers); // { toLowerCase: true }
+console.log("[EventComponent3] props.modelModifiers - ", props.modelModifiers); // { capitalize: true }
+console.log("[EventComponent3] props.emailModifiers - ", props.emailModifiers); // { toLowerCase: true }
 </script>
 
 <style></style>
