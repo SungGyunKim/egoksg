@@ -14,6 +14,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "DirectiveComponent",
+};
+</script>
+
 <script setup>
 import { ref } from "@vue/reactivity";
 
