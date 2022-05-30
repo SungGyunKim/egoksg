@@ -68,6 +68,21 @@ const router = createRouter({
       name: "FallthroughAttributesView",
       component: () => import("../views/FallthroughAttributesView.vue"),
     },
+    {
+      path: "/AsyncComponentsView",
+      name: "AsyncComponentsView",
+      component: () => import("../views/AsyncComponentsView.vue"),
+    },
+    {
+      path: "/TransitionView",
+      name: "TransitionView",
+      component: () => import("../views/TransitionView.vue"),
+    },
+    {
+      path: "/TransitionGroupView",
+      name: "TransitionGroupView",
+      component: () => import("../views/TransitionGroupView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
