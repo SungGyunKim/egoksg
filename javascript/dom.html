@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" name="input" class="target classA classB" placeholder="입력1" id="target">
+  <input type="text" name="input" class="target" placeholder="입력2">
+  <div class="button-group">
+    <button>버튼1</button>
+    <button>버튼2</button>
+  </div>
+  <script>
+    // DOM 탐색
+    // ref) http://www.tcpschool.com/javascript/js_dom_concept
+    console.log("getElementById         : ", document.getElementById("target"));                              // element
+    console.log("getElementsByName      : ", document.getElementsByName("input"));                            // NodeList
+    console.log("getElementsByClassName : ", document.getElementsByClassName("target"));                      // HTMLCollection-live
+    console.log("getElementsByTagName   : ", document.getElementsByTagName("input"));                         // HTMLCollection-live 
+    console.log("querySelector          : ", document.querySelector(".button-group"));                        // element
+    console.log("querySelectorAll       : ", document.querySelectorAll(".button-group"));                     // NodeList-static
+    console.log("parentElement          : ", document.querySelector(".button-group").parentElement);          // element
+    console.log("parentNode             : ", document.querySelector(".button-group").parentNode);             // node
+    console.log("children               : ", document.querySelector(".button-group").children);               // HTMLCollection-live
+    console.log("childNodes             : ", document.querySelector(".button-group").childNodes);             // NodeList-live
+    console.log("previousElementSibling : ", document.querySelector("#target").previousElementSibling);       // element
+    console.log("previousSibling        : ", document.querySelector("#target").previousSibling);              // node
+    console.log("nextElementSibling     : ", document.querySelector("#target").nextElementSibling);           // element
+    console.log("nextSibling            : ", document.querySelector("#target").nextSibling);                  // node
+    console.log("firstElementChild      : ", document.querySelector(".button-group").firstElementChild);      // element
+    console.log("firstChild             : ", document.querySelector(".button-group").firstChild);             // node
+    console.log("lastChild              : ", document.querySelector(".button-group").lastChild);              // element
+    console.log("lastElementChild       : ", document.querySelector(".button-group").lastElementChild);       // node
+
+    // HTMLCollection vs NodeList
+    /**
+    Both have a length property that returns the number of elements in the list (collection).
+    
+    [ HTMLCollection ]
+      An HTMLCollection is a collection of document elements.
+      HTMLCollection items can be accessed by their name, id, or index number.
+      An HTMLCollection is always a live collection.
+        : If you add a <li> element to a list in the DOM, the list in the HTMLCollection will also change.
+      An HTMLCollection is NOT an array!
+    
+      * length & item
+        for(let idx = 0; idx < document.getElementsByTagName("input").length; idx++) {
+          console.log(document.getElementsByTagName("input").item(idx));
+        }
+      
+      * Symbol(Symbol.iterator)
+        for(const elm of document.getElementsByTagName("input")) {
+          console.log(elm);
+        }
+    [ NodeList ]
+      A NodeList is a collection of document nodes (element nodes, attribute nodes, and text nodes).
+      NodeList items can only be accessed by their index number.
+      A NodeList is most often a static 
+        Example: If you add a <li> element to a list in the DOM, the list in NodeList will not change.
+      A NodeList may look like an array, but it is not.
+    
+    ref) https://www.w3schools.com/js/js_htmldom_nodes.asp
+    ref) https://www.w3schools.com/js/js_htmldom_collections.asp
+    ref) https://www.w3schools.com/js/js_htmldom_nodelist.asp
+    ref) https://developer.mozilla.org/en-US/docs/Web/API/NodeList
+     */
+    const nodeList    = document.getElementsByName("input");
+    const collection  = document.getElementsByTagName("input");
+    
+    console.log("nodeList   : ", nodeList);
+    console.log("collection : ", collection);
+    
+    const dom = document.getElementById("target");
+    console.log("dom : ", dom);
+    // HTML DOM Attributes
+    /**
+     * 
+     * ref) https://developer.mozilla.org/en-US/docs/Web/API/Element
+     */
+    console.log("[Attributes] dom.attributes : ", dom.attributes); // NamedNodeMap
+    console.log("[Attributes] dom.hasAttribute('placeholder')          : ", dom.hasAttribute('placeholder'));
+    console.log("[Attributes] dom.getAttribute('placeholder')          : ", dom.getAttribute('placeholder'));
+    console.log("[Attributes] dom.setAttribute('placeholder', '입력3')  : ", dom.setAttribute('placeholder', '입력3'));
+    console.log("[Attributes] dom.removeAttribute('placeholder')       : ", dom.removeAttribute('placeholder'));
+    console.log("[Attributes] dom.toggleAttribute('disabled')          : ", dom.toggleAttribute('disabled'));
+
+    // HTMLElement Style
+    /**
+     * 
+     * ref) https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
+     */
+    dom.style.background = "blue";
+    console.log("[Style] dom.style : ", dom.style); // CSSStyleDeclaration
+    console.log("[Style] dom.style.background : ", dom.style.background);
+    
+    // HTMLElement CSS
+    /**
+     * 
+     * ref) https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList
+     */
+    console.log("[CSS] dom.classList : ", dom.classList); // DOMTokenList
+    console.log("[CSS] dom.className : ", dom.className);
+  </script>
+</body>
+</html>
