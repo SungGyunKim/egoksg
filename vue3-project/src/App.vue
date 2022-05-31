@@ -34,6 +34,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/AsyncComponentsView">AsyncComponentsView</RouterLink>
         <RouterLink to="/TransitionView">TransitionView</RouterLink>
         <RouterLink to="/TransitionGroupView">TransitionGroupView</RouterLink>
+        <RouterLink to="/TeleportView">TeleportView</RouterLink>
       </nav>
     </div>
   </header>
