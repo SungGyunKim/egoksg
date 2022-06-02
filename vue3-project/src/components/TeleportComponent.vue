@@ -13,22 +13,32 @@
         </template>
       </ModalExampleComponent>
     </Teleport>
+    <component
+      :is="modalCustomComponentShRef"
+      v-bind:option="modalOptionRef"
+    ></component>
   </div>
 </template>
 
 <script setup>
 import ModalExampleComponent from "./ModalExampleComponent.vue";
-import { defineAsyncComponent, ref } from "vue";
+
+import { defineAsyncComponent, ref, shallowRef } from "vue";
 
 const showModal = ref(false);
+const modalCustomComponentShRef = shallowRef(null);
+const modalOptionRef = ref({});
 
 function onModalOpen() {
-  var modalParam = {
+  var modalOption = {
     width: 400,
     height: 600,
+    url: "../views/BuiltInDirectivesView.vue",
   };
 
-  const AsyncComp = defineAsyncComponent({
+  modalOptionRef.value = modalOption;
+
+  modalCustomComponentShRef.value = defineAsyncComponent({
     // The factory function
     loader: () => import("./ModalCustomComponent.vue"),
     // A component to use while the async component is loading
@@ -53,7 +63,5 @@ function onModalOpen() {
       }
     },
   });
-
-  console.log(AsyncComp);
 }
 </script>
