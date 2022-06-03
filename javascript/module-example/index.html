@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!--
+    ref) https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export
+    ref) https://ko.javascript.info/modules-intro
+    ref) https://ko.javascript.info/import-export
+    ref) https://www.youtube.com/watch?v=WUirHxOBXL4
+    ref) https://velog.io/@dongdong98/JavaScript-상대-경로를-깔끔하게-관리하는-법-모듈-index.js-활용
+    ref) https://yceffort.kr/2020/11/avoid-default-export
+  -->
+  <!--
+    script tag를 사용한 모듈화
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    const scriptTagModule = () => {
+      console.log('scriptTagModule');
+    }
+    
+    scriptTagModule();
+  </script>
+
+  <!--
+    외부에서 Default Exports을 사용할 때, 지정해준 이름을 사용해야 한다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import exportDefaultFn from './modules/ch01_01_export_default.js';
+
+    exportDefaultFn();
+  </script>
+
+  <!--
+    특정 대상을 지정하여 Default Exports로 내보낼 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import exportDefaultFn from './modules/ch01_02_export_default.js';
+
+    exportDefaultFn();
+  </script>
+
+  <!--
+    하나의 파일에 이름이 정해진 여러 개의 모듈 내보낼 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import { exportNamdeFn1, exportNamdeFn2 } from './modules/ch02_01_export_named.js';
+
+    exportNamdeFn1();
+    exportNamdeFn2();
+  </script>
+
+  <!--
+    Default Exports와 Named Exports를 동시에 사용할 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import defualtExportFn, { exportNamdeFn1, exportNamdeFn2 } from './modules/ch03_01_export_default_named.js';
+
+    defualtExportFn();
+    exportNamdeFn1();
+    exportNamdeFn2();
+  </script>
+
+  <!--
+    Default Exports와 Named Exports의 이름을 변경하여 내보낼 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import renameDefualtExportFn, { renameExportNamdeFn1, renameExportNamdeFn2 } from './modules/ch04_01_export_renaming.js';
+
+    renameDefualtExportFn();
+    renameExportNamdeFn1();
+    renameExportNamdeFn2();
+  </script>
+
+  <!--
+    Default Exports와 Named Exports를 사용하는 곳에서 변경할 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import { default as renameDefualtExportFn, exportNamdeFn1 as renameExportNamdeFn1, exportNamdeFn2 as renameExportNamdeFn2 }
+    from './modules/ch04_02_import_renaming.js';
+
+    renameDefualtExportFn();
+    renameExportNamdeFn1();
+    renameExportNamdeFn2();
+  </script>
+
+  <!--
+    Default Exports와 Named Exports를 namespace 하나로 묶어 사용할 수 있다.
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import * as lib from './modules/ch05_01_import_namespace.js';
+    
+    lib.default(); // defualtExportFn
+    lib.exportNamdeFn1();
+    lib.exportNamdeFn2();
+  </script>
+
+  <!--
+    모듈 통합 그리고 다시 내보내기
+  -->
+  <script type="module">
+    console.log('---------------------------------------------------------------------');
+    import * as lib from './modules/ch06_01_re-exporting_aggregating.js';
+    
+    // 방법1
+    lib.firsetDefualtExportFn();
+    lib.firsetExportNamdeFn1();
+    lib.firsetExportNamdeFn2();
+
+    // 방법2
+    lib.secondDefualtExportFn();
+    lib.secondExportNamdeFn1();
+    lib.secondExportNamdeFn2();
+    
+    // 방법3
+    lib.default();
+    lib.exportNamdeFn1();
+    lib.exportNamdeFn2();
+  </script>
+
+</body>
+</html>
