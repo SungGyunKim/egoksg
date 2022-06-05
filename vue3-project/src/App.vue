@@ -29,8 +29,12 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/TemplateRefsView">TemplateRefsView</RouterLink>
         <RouterLink to="/SlotsView">SlotsView</RouterLink>
         <RouterLink to="/ProvideinjectView">ProvideinjectView</RouterLink>
-        <RouterLink to="/DynamicComponentsView">DynamicComponentsView</RouterLink>
-        <RouterLink to="/FallthroughAttributesView">FallthroughAttributesView</RouterLink>
+        <RouterLink to="/DynamicComponentsView"
+          >DynamicComponentsView</RouterLink
+        >
+        <RouterLink to="/FallthroughAttributesView"
+          >FallthroughAttributesView</RouterLink
+        >
         <RouterLink to="/AsyncComponentsView">AsyncComponentsView</RouterLink>
         <RouterLink to="/TransitionView">TransitionView</RouterLink>
         <RouterLink to="/TransitionGroupView">TransitionGroupView</RouterLink>
