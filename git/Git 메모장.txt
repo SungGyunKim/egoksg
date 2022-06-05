@@ -1,60 +1,1023 @@
-[ Git 기본 사용법 ]
-    1. Git 다운로드 및 설치
-        https://git-scm.com/downloads
-    2. Git 환경 설정
-        git config --global core.autocrlf true
-        git config --global user.email "egoksg@naver.com"
-        git config --global user.name "egoksg"
-    3. Workspace로 이동
-        cd "Workspace Path"
-    4. Git Repository 생성
-        git init
-    5. Workspace에서 Index로 이동
-        Git은 새로운 파일 및 디렉터리를 추적하지 않는(Untracked) 상태로 보고 있다.
-        Git이 변경 사항을 추적하기 위해 git add 명령어를 사용 Index에 추가한다.
-            git add .
-            git add *
+[ Git workflow   ]
+init                working directoy                        staging(index) area                local repository                 remote repository
+                                       add =>                                     commit =>                        push =>
+    <= restore                      <= restore --staged                                                         <= clone
+    <= clean -fd                    <= restore --source                                                         <= fetch
+                                    <= reset --mixed                                                            <= pull
+                                    <= reset --soft
+                                    <= reset --hard
 
-    6. 변경된 사항 확인
+[ Git 환경 설졍 ]
+    * 환경 설정 확인
+        git config --global --list
+    
+    * 환경 설정 편집
+        git config --global -e
+
+    * 환경 설정
+        [user]
+                email = egoksg@naver.com
+                name = egoksg
+        [core]
+                autocrlf = true
+                editor = code --wait
+        [alias]
+                co = checkout
+                br = branch
+                cm = commit
+                st = status
+                ac = !git add -A && git commit -m
+                hist = log --graph --all --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(white)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --date=short
+        [diff]
+                tool = vscode
+                prompt = false
+        [difftool "vscode"]
+                cmd = code --wait --diff $LOCAL $REMOTE
+        [difftool "p4merge"]
+                path = "C:/Program Files/Perforce/p4merge.exe"
+        [merge]
+                tool = p4merge
+        [mergetool]
+                keepBackup = false
+                prompt = false
+        [mergetool "vscode"]
+                cmd = code --wait $MERGED
+        [mergetool "p4merge"]
+                path = "C:/Program Files/Perforce/p4merge.exe"
+
+[ Branch Basic ]
+    * Local Repository Branch 확인
+        git branch
+        ※ * 가 있는 현재 HEAD가 가리키고 있는 Branch이다. 
+    * Local + Remote Repository Branch 확인
+        git branch -a
+
+    * Branch 생성
+        git branch new-branch-name
+    
+    * Branch 이동
+        git checkout new-branch-name
+        git checkout master
+
+    * Branch의 최신 commit 내용 확인
+        git branch -v
+
+    * 현재 Branch에서 merge가 된 Branch 확인
+        git branch --merged
+
+    * 현재 Branch에서 merge가 되지 않는 Branch 확인
+        git branch --no-merged
+
+    * Branch 이름 변경
+        git branch --move new-branch-name old-branch-name
+    
+    * Branch 이름 변경을 원격 Repository 반영
+        git push --set-upstream origin old-branch-name
+    
+    * Branch 삭제
+        git branch -d old-branch-name
+
+    * Branch 삭제을 원격 Repository 반영
+        git push origin --delete old-branch-name
+
+    * Branch 비교
+        git checkout -b test
+        echo test > test.txt
+        git add .
+        git commit -m "test"
+        git log master..test
+        git hist master..test
+        git diff master..test
+        git difftool master..test
+
+[ Branch Merge ]
+    * merge의 기본 전략
+        merge의 기본 전략은 fast-forward이다.
+        fast-forward는 master branch와 merge하고자 하는 branch 사이에 master branch로부터 파생된 commit이 없다면 master branch가 새로운 branch를 가리키도록 하는 전략이다.
+        만약 master branch로부터 파생된 commit이 있다면 다른 전략을 사용한다.
+        ※ 단, merge 히스토리가 남지 않는다.
+
+        git switch master
+        git merge feature-c # fast-forward merge가 기본 전략이다.
+    
+    * merge의 기본 전략 사용하지 않음
+        git switch master
+        git merge --no-ff feature-c
+
+[ Branch Merge Conflict ]
+    * merge conflict 발생
+        git merge feature
+        ※ 결과에 'CONFLICT' 메시지가 나타난다.
+
+    * merge conflict 확인
         git status
+        ※ 결과에 'both modified' 메세지가 나타난다.
 
-    7. Index에서 Local Repository로 이동
-        git commit -m "comment"
+    * merge conflict 해결
+        git mergetool
+        
+    * merge conflict 해결한 추가
+        git add main.txt
+    
+    * merge 계속해서 수행
+        git merge --continue
+    
+    * merge revert
+        git merge --abort
+
+[ Branch Rebase ]
+    * 현재 Branch를 master branch로부터 파생되게 할 경우
+        git switch feature-b
+        git rebase master
+        git switch master
+        git merge feature-b
+        git branch -d feature-a
+        git branch -d feature-b
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Branch Rebase --onto ]
+    [ 이력 ]
+        git hist
+            * [2020-10-28] [f2b9178] | Add ProfileService Interface {{Ellie}}  (profile)
+            | * [2020-10-28] [5a090bf] | Add profile UI {{Ellie}}  (profile-ui)
+            |/
+            * [2020-10-28] [cd9c9e7] | Add tests for ProfileService {{Ellie}}
+            * [2020-10-28] [dc89240] | Add ProfileService {{Ellie}}
+            * [2020-10-28] [bbac9d0] | Add LoginService {{Ellie}}  (HEAD -> master)
+
+    [ 상황 설명 ]
+        profile-ui branch를 배포하고자 하는데 master branch와 profile-ui branch 사이에 profile-ui branch와 관련 없는 커밋들이 존재한다.
+        master branch 이후에 profile-ui branch가 올 수 있도록 profile-ui branch와 관련 없는 커밋들을 profile branch로 옮겨야 한다.
+        master branch 이후에 profile-ui branch가 오게 만들고 Fast-forward merge를 진행헤야 한다.
+
+    [ 명령어1 ]
+        git rebase --onto master profile profile-ui
+        git hist
+            * [2020-10-28] [cbaa3df] | Add profile UI {{Ellie}}  (HEAD -> profile-ui)
+            | * [2020-10-28] [f2b9178] | Add ProfileService Interface {{Ellie}}  (profile)
+            | * [2020-10-28] [cd9c9e7] | Add tests for ProfileService {{Ellie}}
+            | * [2020-10-28] [dc89240] | Add ProfileService {{Ellie}}
+            |/
+            * [2020-10-28] [bbac9d0] | Add LoginService {{Ellie}}  (master)
+    
+    [ 명령어2 ]
+        git switch master
+        git merge profile-ui
+        git hist
+            * [2020-10-28] [cbaa3df] | Add profile UI {{Ellie}}  (HEAD -> master, profile-ui)
+            | * [2020-10-28] [f2b9178] | Add ProfileService Interface {{Ellie}}  (profile)
+            | * [2020-10-28] [cd9c9e7] | Add tests for ProfileService {{Ellie}}
+            | * [2020-10-28] [dc89240] | Add ProfileService {{Ellie}}
+            |/
+            * [2020-10-28] [bbac9d0] | Add LoginService {{Ellie}}
+    
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954898-4-10-rebase
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Branch cherry-pick ]
+    ※ '[ Branch Rebase --onto ]'가 선행되어야 한다.
+
+    [ 이력 ]
+        git hist
+            * [2020-10-28] [cbaa3df] | Add profile UI {{Ellie}}  (HEAD -> master, profile-ui)
+            | * [2020-10-28] [f2b9178] | Add ProfileService Interface {{Ellie}}  (profile)
+            | * [2020-10-28] [cd9c9e7] | Add tests for ProfileService {{Ellie}}
+            | * [2020-10-28] [dc89240] | Add ProfileService {{Ellie}}
+            |/
+            * [2020-10-28] [bbac9d0] | Add LoginService {{Ellie}}
+    
+    [ 상황 설명 ]
+        profile branch의 'f2b9178 (Add ProfileService Interface)' 커밋에 있는 내용들이 master branch에 포함되기를 원한다.
+
+    [ 명령어1 ]
+        git switch master
+        git cherry-pick f2b9178
+        git hist
+            * [2020-10-28] [ae7b8c9] | Add ProfileService Interface {{Ellie}}  (HEAD -> master)
+            * [2020-10-28] [cbaa3df] | Add profile UI {{Ellie}}  (profile-ui)
+            | * [2020-10-28] [f2b9178] | Add ProfileService Interface {{Ellie}}  (profile)
+            | * [2020-10-28] [cd9c9e7] | Add tests for ProfileService {{Ellie}}
+            | * [2020-10-28] [dc89240] | Add ProfileService {{Ellie}}
+            |/
+            * [2020-10-28] [bbac9d0] | Add LoginService {{Ellie}}
+    
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954902-4-11
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Stash ]
+
+    [ 준비 ]
+        echo modify >> about.txt                                            # working directory에서 tracking file 수정
+        echo untracked > untracked.txt                                      # working directory에서 untracked file 추가
+        echo index > index.txt                                              # index area에 추가할 파일 생성
+        git add index.txt                                                   # index area에 추가
+    
+    [ 이력 ]
+        git status                                                          # local 상태 확인
+            On branch master
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                    new file:   index.txt
+
+            Changes not staged for commit:
+            (use "git add <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    modified:   about.txt
+
+            Untracked files:
+            (use "git add <file>..." to include in what will be committed)
+                    untracked.txt
+    
+    [ 상황 설명 ]
+        다른 사람의 branch를 받아서 실행시켜야 할 일이 생겼다.
+        그런데 PC에서 index area 이미 추가된 파일을 수정(tracking file), 새롭게 추가한 파일(untracked file), index area에 추가한 파일이 있는 상태이다.
+        이것들을 임시 저장소(stash)에 옮겨야 한다.
+        다른 사람의 branch를 확인하였으면 기존의 나의 소스로 복구한다.
+
+    [ 명령어1 ]
+        git stash push -m "index area move to stash" --keep-index           # index area에 있는 파일들을 stash stack으로 이동
+        git stash push -m "tracking file move to stash" --keep-index        # 수정한 tracking file을 stash stack으로 이동
+                                                                            # ※ index area 상태를 유지하면서 stash를 만들려면 --keep-index를 붙여야 한다.
+                                                                            #    만약, 해당 옵션을 붙이지 않으면 하나의 stash로 합쳐진다.
+        git stash push -m "untracked file move to stash" -u                 # untracked file을 stash stack으로 이동
+        git stash list                                                      # stash 목록 확인
+            stash@{0}: On master: untracked file move to stash
+            stash@{1}: On master: tracking file move to stash
+            stash@{2}: On master: index area move to stash
+    
+    [ 명령어2 ]
+        git stash list                                                      # stash stack 목록 확인
+            stash@{0}: On master: untracked file move to stash
+            stash@{1}: On master: tracking file move to stash
+            stash@{2}: On master: index area move to stash
+        git stash show stash@{0} -p                                         # stash stack 상세 확인
+        git stash apply stash@{0}                                           # stash를 working directory에 적용
+        git stash drop stash@{0}                                            # stash stack 삭제
+        git stash list                                                      # stash stack 목록 확인
+            stash@{0}: On master: tracking file move to stash
+            stash@{1}: On master: index area move to stash
+        git stash pop stash@{1}                                             # stash apply와 stash drop를 합친 명령어이다.
+        git stash list                                                      # stash stack 목록 확인
+            stash@{0}: On master: tracking file move to stash
+        git stash pop                                                       # stash stack에서 가장 최근에 넣은 stash를 꺼낸다.
+        git stash clear                                                     # stash stack에 있는 stash를 모두 지운다.
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954923-5-2-stash
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > modified tracking file rollback ]
+    [ 준비 ]
+        echo add >> payment-ui.txt                                          # working directory에서 tracking file 수정
+    
+    [ 이력 ]
+        git status                                                          # local 상태 확인
+            On branch master
+            Changes not staged for commit:
+            (use "git add <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    modified:   payment-ui.txt
+    
+    [ 상황 설명 ]
+        working directory에서 tracking file 수정하였는데 index area에 있는 마지막 버전으로 돌리고 싶다.
+
+    [ 명령어1 ]
+        git restore payment-ui.txt                                          # 해당 파일을 index area에 있는 마지막 버전으로 돌린다.
+        git restore .                                                       # 해당 폴더 전체를 index area에 있는 마지막 버전으로 돌린다.
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954948-6-2
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > 작업하던 파일을 이전 index area로 변경 ]
+
+    [ 준비 ]
+        echo add >> payment-ui.txt                                          # working directory에서 tracking file 수정
+        git add payment-ui.txt                                              # 수정된 tracking file을 index area에 추가한다.
+    
+    [ 이력 ]
+        git status                                                          # local 상태 확인
+            On branch master
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                    modified:   payment-ui.txt
+    
+    [ 상황 설명 ]
+        index area에 추가된 파일을 또 다시 수정하게 되었다.
+        따라서 파일을 working directory에 옮기고 작업한 다음 index area에 추가할 것이다.
+
+    [ 명령어1 ]
+        git restore --staged payment-ui.txt                                 # index area에 있는 파일을 working directory에 옮긴다.
+        git restore --staged .                                              # index area에 추가된 변경 사항을 모두 옮긴다.
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954948-6-2
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > 작업하던 파일을 특정 commit으로 이동 ]
+
+    [ 준비 ]
+        echo add >> payment-ui.txt                                          # working directory에서 tracking file 수정
+        git add payment-ui.txt                                              # 수정된 tracking file을 index area에 추가한다.
+    
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [e94152f] | . {{Ellie}} 
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}} 
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}} 
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}} 
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}} 
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}} 
+    
+    [ 상황 설명 ]
+        작업 하던 payment-ui.txt가 문제가 있어서 payment-ui.txt가 없었던 시점인 '[fa7bbd6] | Add payment client {{Ellie}}'로 이동하고자 한다.
+
+    [ 명령어1 ]
+        git restore --source=HEAD~2 payment-ui.txt                          # HEAD로부터 2번째 떨어진 곳(fa7bbd6)
+        git restore --source=fa7bbd6 payment-ui.txt                         # 특정 commit한 시점(fa7bbd6) 
+        git status                                                          # local 상태 확인
+            On branch master
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                    modified:   payment-ui.txt
+
+            Changes not staged for commit:
+            (use "git add/rm <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    deleted:    payment-ui.txt
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954948-6-2
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > 이미 commit한 history의 comment 변경 ]
+
+    [ 준비 ]
+        echo add > add.txt                                                  # working directory에서 tracking file 수정
+        git add add.txt                                                     # 수정된 tracking file을 index area에 추가한다.
+        git commit -m "."                                                   # index area에 있는 내용을 
+
+    [ 이력 ]
+        git hist
+            * [2022-06-01] [603acdd] | . {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    [ 상황 설명 ]
+        방금 commit한 history의 comment가 잘못되어 수정하고자 한다.
+    
+    [ 명령어1 ]
+        git commit --amend -m "Add new file"                                # 방금 commit한 comment 수정
+        git hist
+            * [2022-06-01] [ac8f5c6] | Add new file {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954954-6-3
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > 이미 commit한 history의 파일 변경 후 적용 ]
+    ※ '[ Git undo > 이미 commit한 history의 comment 변경 ]'가 선행되어야 한다.
+
+    [ 준비 ] 
+
+    [ 이력 ]
+        git hist
+            * [2022-06-01] [603acdd] | . {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git show HEAD
+            commit ac8f5c6bc68cf41198be7def89a16057210e0ccf (HEAD -> master)
+            Author: egoksg <egoksg@naver.com>
+            Date:   Wed Jun 1 19:24:39 2022 +0900
+
+                Add new file
+
+            diff --git a/add.txt b/add.txt
+            new file mode 100644
+            index 0000000..893b969
+            --- /dev/null
+            +++ b/add.txt
+            @@ -0,0 +1 @@
+            +add 
+    
+    [ 상황 설명 ]
+        방금 commit한 history에 추가된 파일의 내용이 잘못되어 수정 후 해당 history에 추가하고자 한다.
+    
+    [ 명령어1 ]
+        echo add2 >> add.txt
+        git add add.txt
+        git commit add.txt
+        git hist
+            * [2022-06-01] [ac8f5c6] | Add new file {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git show HEAD
+            commit 58ebe2580e07271ef0b38db6affb5879ac7f5d18 (HEAD -> master)
+            Author: egoksg <egoksg@naver.com>
+            Date:   Wed Jun 1 19:24:39 2022 +0900
+
+                Add new file
+
+            diff --git a/add.txt b/add.txt
+            new file mode 100644
+            index 0000000..621c8c0
+            --- /dev/null
+            +++ b/add.txt
+            @@ -0,0 +1,2 @@
+            +add 
+            +add2
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954954-6-3
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > reset ]
+    ※ '[ Git undo > 이미 commit한 history의 파일 변경 후 적용 ]'가 선행된 상태이지만 필수로 할 필요는 없다.
+
+    [ 준비 ]
+
+    [ 이력 ]
+        git hist
+            * [2022-06-01] [58ebe25] | Add new file {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    [ 상황 설명 ]
+        '[e94152f] | . {{Ellie}}' 이전 history의 변경 사항을 working directory에 옮겨지고 history는 삭제한다.
+        '[fa7bbd6] | Add payment client {{Ellie}}' 이전 history의 변경 사항을 index area에 옮겨지고 history는 삭제한다.
+        '[fa7bbd6] | Add payment client {{Ellie}}' 이전 history의 변경 사항을 옮기지 말고 history는 삭제한다.
+    
+    [ 명령어1 ]
+        git reset e94152f --mixed                                          # 이전 history의 변경 사항을 working directory에 옮겨지고 history는 삭제한다.
+        git hist
+            * [2020-11-01] [e94152f] | . {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git status
+            On branch master
+            Changes not staged for commit:
+            (use "git add <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    modified:   payment-ui.txt
+    
+    [ 명령어2 ]
+        git reset fa7bbd6 --soft                                            # 이전 history의 변경 사항을 index area에 옮겨지고 history는 삭제한다.
+        git hist
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}} 
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}} 
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}} 
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git status
+            On branch master
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                    new file:   payment-ui.txt
+
+            Changes not staged for commit:
+            (use "git add <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    modified:   payment-ui.txt
+
+    [ 명령어3 ]
+        git reset fa7bbd6 --hard                                            # 이전 history의 변경 사항을 옮기지 말고 history는 삭제한다.
+        git hist
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git status
+            On branch master
+            nothing to commit, working tree clean
+    
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954963-6-4
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > reset, commit rollback ]
+    ※ '[ Git undo > reset ]'가 선행되어야 한다.
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    [ 상황 설명 ]
+        기존에 커밋 했던 'Add payment UI' 상태로 돌아가고 싶은데 reset --hard 명령어로 인해 해시값을 알 수가 없다.
+        이를 찾고 해당 시점으로 이동한다.
+
+    [ 명령어1 ]
+        git reflog
+            fa7bbd6 (HEAD -> master) HEAD@{0}: reset: moving to fa7bbd6
+            fa7bbd6 (HEAD -> master) HEAD@{1}: reset: moving to fa7bbd6
+            e94152f HEAD@{2}: reset: moving to e94152f
+            0ddd7ab HEAD@{3}: commit: Add payment UI
+            e94152f HEAD@{4}: commit: .
+            fa7bbd6 (HEAD -> master) HEAD@{5}: commit: Add payment client
+            1d11be8 HEAD@{6}: commit: WIP
+            98955fc HEAD@{7}: reset: moving to HEAD^
+            0440fb9 HEAD@{8}: commit: WIP
+            98955fc HEAD@{9}: commit: Add payment library and Add payment service
+            707de7d HEAD@{10}: commit: Setup Dependencies
+            20ee16f HEAD@{11}: commit (initial): Initialise Project
+        git reset --hard 0ddd7ab
+        git hist
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17954979-6-5
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > revert : 이전 커밋으로 되돌리기 ]
+    ※ 서버에 push된 히스토리라면 이전으로 되돌리는 이력을 남기기 위해 revert를 사용해야 한다.
+       reset과 rebase는 이력을 남기지 않는다.
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    [ 상황 설명 ]
+        '[fa7bbd6] | Add payment client {{Ellie}}'에 문제가 생겨서 해당 commit에 포함된 파일들을 rollback하고 commit을 해야 한다.
+        '[1d11be8] | WIP {{Ellie}}'에 문제가 생겨서 commit에 포함된 파일들을 rollback하고 commit을 하지 말아야 한다.
+
+    [ 명령어1 ]
+        git revert fa7bbd6
+        git hist
+            * [2022-06-02] [0a24fcd] | Revert "Add payment client" {{egoksg}}  (HEAD -> master)
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git revert 1d11be8 --no-commit
+        git status
+            On branch master
+            You are currently reverting commit 1d11be8.
+            (all conflicts fixed: run "git revert --continue")
+            (use "git revert --skip" to skip this patch)
+            (use "git revert --abort" to cancel the revert operation)
+
+            Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                    deleted:    payment-client.txt
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955003-6-7
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > rebase -i : 과거의 commit 수정하기 ]
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [0ddd7ab] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [e94152f] | . {{Ellie}}
+            * [2020-11-01] [fa7bbd6] | Add payment client {{Ellie}}
+            * [2020-11-01] [1d11be8] | WIP {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    [ 상황 설명 ]
+        '[2020-11-01] [1d11be8] | WIP {{Ellie}}'의 comment를 수정하고자 한다.
+        ※ '2020-11-01] [1d11be8] | WIP {{Ellie}}' 이전인 '[98955fc] | Add payment library and Add payment service {{Ellie}}'에서 부터 수정하게 된다.
+
+    [ 명령어1 ]
+        git rebase -i 98955fc                                       # 편집창이 열리면 pick을 reword로 변경한다.
+        git hist
+            * [2020-11-01] [f04d6aa] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [fb89532] | . {{Ellie}}
+            * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}
+            * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955009-6-8
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > rebase -i : 과거의 commit 삭제하기 ]
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [f04d6aa] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [fb89532] | . {{Ellie}}
+            * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}
+            * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    [ 상황 설명 ]
+        '[fb89532] | . {{Ellie}}' commit을 삭제한다.
+        그런데 해당 커밋에 있는 payment-ui.txt가 '[fa7bbd6] | Add payment client {{Ellie}}'에서 수정되어 있다.
+        그래서 payment-ui.txt를 그대로 쓰라고 한다.
+
+    [ 명령어1 ]
+        git rebase -i 9e9f298                                               # pick을 drop으로 바꾸고 저장한다.
+            CONFLICT (modify/delete): payment-ui.txt deleted in HEAD and modified in f04d6aa (Add payment UI).  Version f04d6aa (Add payment UI) of payment-ui.txt left in tree.
+            error: could not apply f04d6aa... Add payment UI
+            hint: Resolve all conflicts manually, mark them as resolved with
+            hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+            hint: You can instead skip this commit: run "git rebase --skip".
+            hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+            Could not apply f04d6aa... Add payment UI
+        git hist
+            * [2020-11-01] [f04d6aa] | Add payment UI {{Ellie}}  (master)
+            * [2020-11-01] [fb89532] | . {{Ellie}}
+            * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}  (HEAD)
+            * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git status
+            interactive rebase in progress; onto 9e9f298
+            Last commands done (2 commands done):
+            drop fb89532 .
+            pick f04d6aa Add payment UI
+            No commands remaining.
+            You are currently rebasing branch 'master' on '9e9f298'.
+            (fix conflicts and then run "git rebase --continue")
+            (use "git rebase --skip" to skip this patch)
+            (use "git rebase --abort" to check out the original branch)
+
+            Unmerged paths:
+            (use "git restore --staged <file>..." to unstage)
+            (use "git add/rm <file>..." as appropriate to mark resolution)
+                    deleted by us:   payment-ui.txt
+
+            no changes added to commit (use "git add" and/or "git commit -a")
+        git add payment-ui.txt                                              # payment-ui.txt를 그대로 쓰라고 한다.
+        git rebase --continue                                               # rebase를 계속 진행한다.
+        git hist
+            * [2020-11-01] [4b4f648] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}
+            * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955012-6-9
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955015-6-10
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > rebase -i : 하나의 commit 분리하기 ]
+    ※ '[ Git undo > rebase -i : 과거의 commit 삭제하기 ]'가 선행되어야 한다.
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [4b4f648] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [9e9f298] | Add payment client {{Ellie}} 
+            * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}} 
+            * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}} 
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}} 
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    [ 상황 설명 ]
+        '[98955fc] | Add payment library and Add payment service {{Ellie}}'에는 두 가지의 기능이 포함되어 있다.
+        이것을 분리해서 commit을 만들려고 한다.
+        이전 커밋인 '[707de7d] | Setup Dependencies {{Ellie}}'에서 부터 수정해야 한다.
+
+    [ 명령어1 ]
+        git rebase -i 707de7d                                               # 4b4f648에 pick을 edit로 변경한다.
+            Stopped at 98955fc...  Add payment library and Add payment service
+            You can amend the commit now, with
+
+            git commit --amend
+
+            Once you are satisfied with your changes, run
+
+            git rebase --continue
+        git status
+            interactive rebase in progress; onto 707de7d
+            Last command done (1 command done):
+            edit 98955fc Add payment library and Add payment service
+            Next commands to do (3 remaining commands):
+            pick 2a4c595 commit message - edited
+            pick 9e9f298 Add payment client
+            (use "git rebase --edit-todo" to view and edit)
+            You are currently editing a commit while rebasing branch 'master' on '707de7d'.
+            (use "git commit --amend" to amend the current commit)
+            (use "git rebase --continue" once you are satisfied with your changes)
+
+            nothing to commit, working tree clean
+        git reset --mixed 707de7d                                          # '[707de7d] | Setup Dependencies {{Ellie}}' 상태로 되돌려
+                                                                           # '[98955fc] | Add payment library and Add payment service {{Ellie}}'의 작업 파일을
+                                                                           # working directory로 옮긴다.
+        git status
+            interactive rebase in progress; onto 707de7d
+            Last command done (1 command done):
+            edit 98955fc Add payment library and Add payment service
+            Next commands to do (3 remaining commands):
+            pick 2a4c595 commit message - edited
+            pick 9e9f298 Add payment client
+            (use "git rebase --edit-todo" to view and edit)
+            You are currently splitting a commit while rebasing branch 'master' on '707de7d'.
+            (Once your working directory is clean, run "git rebase --continue")
+
+            Changes not staged for commit:
+            (use "git add <file>..." to update what will be committed)
+            (use "git restore <file>..." to discard changes in working directory)
+                    modified:   package.json
+
+            Untracked files:
+            (use "git add <file>..." to include in what will be committed)
+                    payment-service.txt
+
+            no changes added to commit (use "git add" and/or "git commit -a")
+        git add package.json
+        git commit -m "Add payment library"
+        git hist
+            * [2022-06-02] [e76be40] | Add payment library {{egoksg}}  (HEAD)
+            | * [2020-11-01] [4b4f648] | Add payment UI {{Ellie}}  (master)
+            | * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}
+            | * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            | * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            |/
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git add payment-service.txt
+        git commit -m "Add payment service"
+        git hist
+            * [2022-06-02] [6230855] | Add payment service {{egoksg}}  (HEAD)
+            * [2022-06-02] [e76be40] | Add payment library {{egoksg}}
+            | * [2020-11-01] [4b4f648] | Add payment UI {{Ellie}}  (master)
+            | * [2020-11-01] [9e9f298] | Add payment client {{Ellie}}
+            | * [2020-11-01] [2a4c595] | commit message - edited {{Ellie}}
+            | * [2020-11-01] [98955fc] | Add payment library and Add payment service {{Ellie}}
+            |/
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+        git rebase --continue
+        git hist
+            * [2020-11-01] [d5add18] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [503ef4d] | Add payment client {{Ellie}}
+            * [2020-11-01] [8051d35] | commit message - edited {{Ellie}}
+            * [2022-06-02] [6230855] | Add payment service {{egoksg}}
+            * [2022-06-02] [e76be40] | Add payment library {{egoksg}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955021-6-11
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955026-6-12
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git undo > rebase -i : 여러 commit을 하나의 commit로 합치기 ]
+    ※ '[ Git undo > rebase -i : 하나의 commit 분리하기 ]'가 선행되어야 한다.
+
+    [ 이력 ]
+        git hist
+            * [2020-11-01] [d5add18] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [503ef4d] | Add payment client {{Ellie}}
+            * [2020-11-01] [8051d35] | commit message - edited {{Ellie}}
+            * [2022-06-02] [6230855] | Add payment service {{egoksg}}
+            * [2022-06-02] [e76be40] | Add payment library {{egoksg}}
+            * [2020-11-01] [707de7d] | Setup Dependencies {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    [ 상황 설명 ]
+        '[707de7d] | Setup Dependencies {{Ellie}}' ~ '[8051d35] | commit message - edited {{Ellie}}'를 하나의 commit으로 합치려고 한다.
+        '[707de7d] | Setup Dependencies {{Ellie}}' pick 유지 <- 여기로 합쳐짐
+        '[e76be40] | Add payment library {{egoksg}}' pick을 squash로 변경
+        '[6230855] | Add payment service {{egoksg}}' pick을 squash로 변경
+        '[8051d35] | commit message - edited {{Ellie}}' pick을 squash로 변경
+    
+    [ 명령어1 ]
+        git rebase -i 20ee16f
+        git hist
+            * [2020-11-01] [e33caa9] | Add payment UI {{Ellie}}  (HEAD -> master)
+            * [2020-11-01] [2397212] | Add payment client {{Ellie}}
+            * [2020-11-01] [332f3b0] | Add payment service {{Ellie}}
+            * [2020-11-01] [20ee16f] | Initialise Project {{Ellie}}
+    
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955031-6-13
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955031-6-14
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+[ git clone ]
+
+    C:\git_study
+    λ git clone https://github.com/SungGyunKim/test.git                         # github에 있는 repository 이름을 그대로 신규 내려받기
+    Cloning into 'test'...
+    remote: Enumerating objects: 6, done.
+    remote: Counting objects: 100% (6/6), done.
+    remote: Compressing objects: 100% (2/2), done.
+    remote: Total 6 (delta 0), reused 0 (delta 0), pack-reused 0
+    Receiving objects: 100% (6/6), done.
+
+    C:\git_study
+    λ ll
+    total 276
+    drwxr-xr-x 1 egoksg 197121     0  6월  2 22:08 .
+    drwxr-xr-x 1 egoksg 197121     0  5월 30 23:11 ..
+    drwxr-xr-x 1 egoksg 197121     0  6월  1 18:08 __MACOSX
+    drwxr-xr-x 1 egoksg 197121     0 10월 28  2020 git-branch
+    -rw-r--r-- 1 egoksg 197121 36947  5월 29 18:25 git-branch.zip     
+    drwxr-xr-x 1 egoksg 197121     0  5월 30 23:29 git-conflict       
+    -rw-r--r-- 1 egoksg 197121 26566  5월 29 18:25 git-conflict.zip   
+    drwxr-xr-x 1 egoksg 197121     0  5월 29 23:21 git-log
+    -rw-r--r-- 1 egoksg 197121 33387  5월 29 18:25 git-log.zip        
+    drwxr-xr-x 1 egoksg 197121     0  5월 30 22:11 git-merge
+    -rw-r--r-- 1 egoksg 197121 29303  5월 29 18:25 git-merge.zip      
+    drwxr-xr-x 1 egoksg 197121     0  6월  1 14:21 git-rebase
+    -rw-r--r-- 1 egoksg 197121 30244  5월 29 18:25 git-rebase.zip     
+    drwxr-xr-x 1 egoksg 197121     0  6월  1 15:27 git-rebase-onto    
+    -rw-r--r-- 1 egoksg 197121 30116  5월 29 18:25 git-rebase-onto.zip
+    drwxr-xr-x 1 egoksg 197121     0  6월  2 21:35 git-undo
+    -rw-r--r-- 1 egoksg 197121 34423  5월 29 18:25 git-undo.zip       
+    drwxr-xr-x 1 egoksg 197121     0  6월  2 22:08 test
+
+    C:\git_study
+    λ git clone https://github.com/SungGyunKim/test.git test-project            # github에 있는 repository 이름을 지정하여 신규로 내려받기
+    Cloning into 'test-project'...
+    remote: Enumerating objects: 6, done.
+    remote: Counting objects: 100% (6/6), done.
+    remote: Compressing objects: 100% (2/2), done.
+    remote: Total 6 (delta 0), reused 0 (delta 0), pack-reused 0
+    Receiving objects: 100% (6/6), done.
+
+    C:\git_study
+    λ cd test
+
+    C:\git_study\test(main -> origin)
+    λ ls
+    README.md
+
+    C:\git_study\test(main -> origin)
+    λ git hist
+    * [2022-06-02] [bf9d10d] | Update README.md {{SungGyunKim}}  (HEAD -> main, origin/main, origin/HEAD)
+    * [2022-06-02] [ecd1261] | Create README.md {{SungGyunKim}}
+
+    C:\git_study\test(main -> origin)
+    λ git remote                                                                # remote 정보 보기
+    origin
+
+    C:\git_study\test(main -> origin)
+    λ git remote -v                                                             # remote 상세 정보 보기
+    origin  https://github.com/SungGyunKim/test.git (fetch)
+    origin  https://github.com/SungGyunKim/test.git (push)
+
+    C:\git_study\test(main -> origin)
+    λ git remote add server https://github.com/SungGyunKim/test.git
+
+    C:\git_study\test(main -> origin)
+    λ git remote -v
+    origin  https://github.com/SungGyunKim/test.git (fetch)
+    origin  https://github.com/SungGyunKim/test.git (push)
+    server  https://github.com/SungGyunKim/test.git (fetch)
+    server  https://github.com/SungGyunKim/test.git (push)
+
+    C:\git_study\test(main -> origin)
+    λ git remote show origin                                                    # remote 상세 정보 보기
+    * remote origin
+    Fetch URL: https://github.com/SungGyunKim/test.git
+    Push  URL: https://github.com/SungGyunKim/test.git
+    HEAD branch: main
+    Remote branch:
+        main tracked
+    Local branch configured for 'git pull':
+        main merges with remote main
+    Local ref configured for 'git push':
+        main pushes to main (up to date)
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955330-7-4-pc
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+[ git sync ]
+
+    git push                                    # local repository history를 remote repository에 보내기
+    git push -f                                 # local repository history를 remote repository에 보내기(강제)
+    git push origin                             # 'origin'이란 이름을 갖는 remote repository의 history 보내기(ref. git remote add, git remote -v)
+    git push origin master                      # 'origin'의 remote repository에서 'master' branch의 히스토리 보내기
+
+    git fetch                                   # remote repository history 내려받기
+    git fetch origin                            # 'origin'이란 이름을 갖는 remote repository의 history 내려받기(ref. git remote add, git remote -v)
+    git fetch origin master                     # 'origin'의 remote repository에서 'master' branch의 히스토리 내려받기
+
+    git pull                                    # remote repository의 commit 이력과 소스를 가지고 온다.
+                                                # local repository과 remote repository의 commit 중 동일한 파일이 수정되었다면 merge conflict가 발생된다.
+                                                # mergetool를 통해 해결하면 복잡한 merge 이력이 남는다.
+    git pull --rebase                           # 위와 같이 merge conflict가 났을때, remote repository를 먼저 적용도고
+                                                # 충돌난 나의 commit을 수정하면 새로운 commit으로 이력이 깔끔하다.
+
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955348-7-7-push
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955377-7-9-fetch-vs-pull
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955394-7-10-fetch
+    ref) https://academy.dream-coding.com/courses/take/git/lessons/17955397-7-11-pull
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+[ git bisect ]
+    프로젝트에 과거에는 문제가 없었으나 어느 순간부터 특정에 기능에 문제가 생겼을 경우, 해당 commit을 찾기 위한 기능이다.
+    문제가 생긴 commit을 찾기 위해 문제가 없었던 부분부터 현재까지 commit 하나한 체크하는 한다.
+
+    git switch [commit hash code]               # 문제가 없었던 commit으로 이동한다.
+    git bisect start                            # bisect 기능을 활성화한다.
+    git bisect good                             # 해당 commit을 확인한 결과 문제가 없으므로 good으로 마킹한다.
+    git switch master                           # 해당 commit을 확인한 결과 문제가 있으므로 bad로 마킹한다.
+                                                # 처음 good과 bad 마킹하면 git이 good과 bad 사이의 commit을 비교하여 문제가 될만한 commit으로 이동시켜준다.
+                                                # 이동된 commit에서 확인한 결과 문제가 없다면 good, 문제가 있다면 bad를 마킹하므로써
+                                                # 문제가 되는 commit을 찾기 위해 점점 좁혀 간다.
+    git bisect reset                            # bisect 기능을 종료한다.
+
+#########################################################################################################################################################
+#########################################################################################################################################################
+#########################################################################################################################################################
+
+[ Git 기본 사용법 ]
+
 
     8. 원격 Repository 추가
         git remote add origin https://github.com/SungGyunKim/egoksg.git
 
     9. 변경이력을 Remote Repository에 있는 main branch에 전송
         git push origin main
-
-[ Git branch create ]
-    1. 현재 branch 확인
-        git branch  *가 있는 branch가 현재 branch
-    
-    2. branch 생성
-        git branch subdir1
-    
-    3. branch 이동
-        git checkout subdir1
-
-    4. 테스트 파일 생성
-        echo "Test Content" > test.txt
-        git add test.txt
-        git commit -m "test.txt commit"
-        git push origin subdir1
-    
-[ Git branch merge ]
-    1. master branch로 이동
-        git checkout master
-    
-    2. master branch와 subdir1 병합
-        git merge subdir1
-
-    3. 변경이력을 Remote Repository에 있는 master branch에 전송
-        git push origin master
-
-    4. branch 삭제
-        git branch -d subdir1
-    
-    5. branch 확인
-        git branch
