@@ -40,6 +40,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/TransitionGroupView">TransitionGroupView</RouterLink>
         <RouterLink to="/TeleportView">TeleportView</RouterLink>
         <RouterLink to="/SuspenseView">SuspenseView</RouterLink>
+        <RouterLink to="/ImmutableDataView">ImmutableDataView</RouterLink>
       </nav>
     </div>
   </header>

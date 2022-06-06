@@ -93,6 +93,16 @@ const router = createRouter({
       name: "SuspenseView",
       component: () => import("../views/SuspenseView.vue"),
     },
+    {
+      path: "/SuspenseView",
+      name: "SuspenseView",
+      component: () => import("../views/SuspenseView.vue"),
+    },
+    {
+      path: "/ImmutableDataView",
+      name: "ImmutableDataView",
+      component: () => import("../views/ImmutableDataView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
