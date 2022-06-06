@@ -41,6 +41,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/TeleportView">TeleportView</RouterLink>
         <RouterLink to="/SuspenseView">SuspenseView</RouterLink>
         <RouterLink to="/ImmutableDataView">ImmutableDataView</RouterLink>
+        <RouterLink to="/XStateView">XStateView</RouterLink>
       </nav>
     </div>
   </header>
