@@ -47,7 +47,9 @@ import HelloWorld from "@/components/HelloWorld.vue";
     </div>
   </header>
 
-  <RouterView />
+  <div class="view-container">
+    <RouterView />
+  </div>
 </template>
 
 <style>
@@ -84,11 +86,19 @@ a,
   }
 }
 
+.view-container {
+  height: 100vh;
+  overflow-y: auto;
+  padding: 50px 20px;
+}
+
 nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 nav a.router-link-exact-active {
