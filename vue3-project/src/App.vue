@@ -42,6 +42,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/SuspenseView">SuspenseView</RouterLink>
         <RouterLink to="/ImmutableDataView">ImmutableDataView</RouterLink>
         <RouterLink to="/XStateView">XStateView</RouterLink>
+        <RouterLink to="/NamespacedComponentsView">NamespacedComponentsView</RouterLink>
       </nav>
     </div>
   </header>
