@@ -113,6 +113,11 @@ const router = createRouter({
       name: "NamespacedComponentsView",
       component: () => import("../views/NamespacedComponentsView.vue"),
     },
+    {
+      path: "/CSSFeaturesView",
+      name: "CSSFeaturesView",
+      component: () => import("../views/CSSFeaturesView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },

@@ -43,6 +43,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/ImmutableDataView">ImmutableDataView</RouterLink>
         <RouterLink to="/XStateView">XStateView</RouterLink>
         <RouterLink to="/NamespacedComponentsView">NamespacedComponentsView</RouterLink>
+        <RouterLink to="/CSSFeaturesView">CSSFeaturesView</RouterLink>
       </nav>
     </div>
   </header>
