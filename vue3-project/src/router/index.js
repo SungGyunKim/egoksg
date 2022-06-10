@@ -118,6 +118,11 @@ const router = createRouter({
       name: "CSSFeaturesView",
       component: () => import("../views/CSSFeaturesView.vue"),
     },
+    {
+      path: "/MixinsAndExtendsView",
+      name: "MixinsAndExtendsView",
+      component: () => import("../views/MixinsAndExtendsView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
