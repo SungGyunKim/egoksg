@@ -38,6 +38,7 @@ export default {
         - mixins 대상을 하나 이상을 지정할 수 있다.
         - 부모 컴포넌트의 <template /> 무시하고 해당 컴포넌트의 <template />을 사용한다.
         - 부모 컴포넌트가 여러 개일 경우, lifecycle hook은 순차적으로 호출된다.
+        - app.mixin()을 통해 모든 컴포넌트에 적용시킬 수 있다.
     */
     ExtendsAndExtendsComponent04, // comp mixins [base01, base02]
     /*
