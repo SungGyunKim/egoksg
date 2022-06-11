@@ -41,6 +41,10 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/NamespacedComponentsView">NamespacedComponentsView</RouterLink>
         <RouterLink to="/CSSFeaturesView">CSSFeaturesView</RouterLink>
         <RouterLink to="/MixinsAndExtendsView">MixinsAndExtendsView</RouterLink>
+        <RouterLink to="/RouterView01">RouterView01</RouterLink>
+        <RouterLink to="/RouterView02">RouterView02</RouterLink>
+        <RouterLink to="/RouterView03">RouterView03</RouterLink>
+        <RouterLink to="/RouterView04">RouterView04</RouterLink>
       </nav>
     </div>
   </header>
