@@ -4,23 +4,19 @@
 
 // 방법1
 import {
-  default as firsetDefualtExportFn,
-  exportNamdeFn1 as firsetExportNamdeFn1,
-  exportNamdeFn2 as firsetExportNamdeFn2
-} from './ch03_01_export_default_named.js';
-export {
-  firsetDefualtExportFn,
-  firsetExportNamdeFn1,
-  firsetExportNamdeFn2
-};
+  default as firstDefaultExportFn,
+  exportNamedFn1 as firstDefaultNamedFn1,
+  exportNamedFn2 as firstDefaultNamedFn2,
+} from "./ch03_01_export_default_named.js";
+export { firstDefaultExportFn, firstDefaultNamedFn1, firstDefaultNamedFn2 };
 
 // 방법2
 export {
-  default as secondDefualtExportFn,
-  exportNamdeFn1 as secondExportNamdeFn1,
-  exportNamdeFn2 as secondExportNamdeFn2
-} from './ch04_02_import_renaming.js';
+  default as secondDefaultExportFn,
+  exportNamedFn1 as secondExportNamedFn1,
+  exportNamedFn2 as secondExportNamedFn2,
+} from "./ch04_02_import_renaming.js";
 
 // 방법3
-export * from './ch05_01_import_namespace.js'; // ※ default는 포함되지 않는다.
-export { default as default } from './ch05_01_import_namespace.js';
+export * from "./ch05_01_import_namespace.js"; // ※ default는 포함되지 않는다.
+export { default as default } from "./ch05_01_import_namespace.js";

@@ -52,10 +52,10 @@
   -->
   <script type="module">
     console.log('---------------------------------------------------------------------');
-    import { exportNamdeFn1, exportNamdeFn2 } from './modules/ch02_01_export_named.js';
+    import { exportNamedFn1, exportNamedFn2 } from './modules/ch02_01_export_named.js';
 
-    exportNamdeFn1();
-    exportNamdeFn2();
+    exportNamedFn1();
+    exportNamedFn2();
   </script>
 
   <!--
@@ -63,11 +63,11 @@
   -->
   <script type="module">
     console.log('---------------------------------------------------------------------');
-    import defualtExportFn, { exportNamdeFn1, exportNamdeFn2 } from './modules/ch03_01_export_default_named.js';
+    import defaultExportFn, { exportNamedFn1, exportNamedFn2 } from './modules/ch03_01_export_default_named.js';
 
-    defualtExportFn();
-    exportNamdeFn1();
-    exportNamdeFn2();
+    defaultExportFn();
+    exportNamedFn1();
+    exportNamedFn2();
   </script>
 
   <!--
@@ -75,11 +75,11 @@
   -->
   <script type="module">
     console.log('---------------------------------------------------------------------');
-    import renameDefualtExportFn, { renameExportNamdeFn1, renameExportNamdeFn2 } from './modules/ch04_01_export_renaming.js';
+    import renameDefaultExportFn, { renameExportNamedFn1, renameExportNamedFn2 } from './modules/ch04_01_export_renaming.js';
 
-    renameDefualtExportFn();
-    renameExportNamdeFn1();
-    renameExportNamdeFn2();
+    renameDefaultExportFn();
+    renameExportNamedFn1();
+    renameExportNamedFn2();
   </script>
 
   <!--
@@ -87,12 +87,12 @@
   -->
   <script type="module">
     console.log('---------------------------------------------------------------------');
-    import { default as renameDefualtExportFn, exportNamdeFn1 as renameExportNamdeFn1, exportNamdeFn2 as renameExportNamdeFn2 }
+    import { default as renameDefaultExportFn, exportNamedFn1 as renameExportNamedFn1, exportNamedFn2 as renameExportNamedFn2 }
     from './modules/ch04_02_import_renaming.js';
 
-    renameDefualtExportFn();
-    renameExportNamdeFn1();
-    renameExportNamdeFn2();
+    renameDefaultExportFn();
+    renameExportNamedFn1();
+    renameExportNamedFn2();
   </script>
 
   <!--
@@ -102,9 +102,9 @@
     console.log('---------------------------------------------------------------------');
     import * as lib from './modules/ch05_01_import_namespace.js';
     
-    lib.default(); // defualtExportFn
-    lib.exportNamdeFn1();
-    lib.exportNamdeFn2();
+    lib.default(); // defaultExportFn
+    lib.exportNamedFn1();
+    lib.exportNamedFn2();
   </script>
 
   <!--
@@ -115,19 +115,19 @@
     import * as lib from './modules/ch06_01_re-exporting_aggregating.js';
     
     // 방법1
-    lib.firsetDefualtExportFn();
-    lib.firsetExportNamdeFn1();
-    lib.firsetExportNamdeFn2();
+    lib.firstDefaultExportFn();
+    lib.firstDefaultNamedFn1();
+    lib.firstDefaultNamedFn2();
 
     // 방법2
-    lib.secondDefualtExportFn();
-    lib.secondExportNamdeFn1();
-    lib.secondExportNamdeFn2();
+    lib.secondDefaultExportFn();
+    lib.secondExportNamedFn1();
+    lib.secondExportNamedFn2();
     
     // 방법3
     lib.default();
-    lib.exportNamdeFn1();
-    lib.exportNamdeFn2();
+    lib.exportNamedFn1();
+    lib.exportNamedFn2();
   </script>
 
   <!--
