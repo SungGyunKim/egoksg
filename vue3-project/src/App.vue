@@ -133,6 +133,8 @@ nav {
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 
 nav a.router-link-exact-active {
