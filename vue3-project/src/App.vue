@@ -59,6 +59,7 @@ import HelloWorld from "@/components/HelloWorld.vue"
         <RouterLink to="/RouterView06">
           RouterView06(Navigation Guards)
         </RouterLink>
+        <RouterLink to="/RouteMetaFields"> Route Meta Fields </RouterLink>
       </nav>
     </div>
   </header>

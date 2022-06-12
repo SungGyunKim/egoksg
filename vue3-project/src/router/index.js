@@ -360,6 +360,11 @@ const router = createRouter({
       component: () => import("../views/RouterView05.vue"),
       beforeEnter: [removeQueryParams, removeHash],
     },
+    {
+      path: "/RouteMetaFields",
+      component: () => import("../views/RouterView05.vue"),
+      meta: { requiresAuth: true },
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
@@ -406,6 +411,15 @@ router.beforeEach(async (to, from /*, next*/) => {
     */
   }
 
+  /*
+    예를들어 /posts/new를 접근할 때, /posts와 /new 모두 일치하며 각 라우터의 정봅는 matched에 배열도 담겨 있습니다.
+    matched 배열을 돌면서 meta를 체크할 수도 있지만 상위 경로와 하위 경로에 있는 meta를 병합한다.
+  */
+  if (to.meta.requiresAuth)
+    console.log("to.meta.requiresAuth : ", to.meta.requiresAuth)
+
+  console.log("to.matched : ", to.matched)
+
   return true
 })
 /*
@@ -428,7 +442,7 @@ router.beforeResolve((to, from) => {
 */
 router.afterEach((to, from, failure) => {
   console.log(
-    `router.afterEach : ${from.path} -> ${to.path}, failure: ${failure.message}`
+    `router.afterEach : ${from.path} -> ${to.path}, failure: ${failure}`
   )
 
   if (!failure) console.log("TODO Anything")
