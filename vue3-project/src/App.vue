@@ -65,8 +65,24 @@ import HelloWorld from "@/components/HelloWorld.vue"
     </div>
   </header>
 
+  <!--
+    v-slot API를 활용해서 Component와 route를 받을 수 있다.
+
+
+    [ 문제 해결]
+      https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated
+      https://github.com/vuejs/core/issues/2027
+  -->
   <div class="view-container">
-    <RouterView />
+    <Suspense>
+      <RouterView v-slot="{ Component, route }">
+        <transition :name="route.meta.transition || 'fade'" mode="out-in">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </transition>
+      </RouterView>
+    </Suspense>
   </div>
 </template>
 
@@ -173,5 +189,34 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+
+.slide-left-leave-to,
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translate(-30px, 0);
 }
 </style>

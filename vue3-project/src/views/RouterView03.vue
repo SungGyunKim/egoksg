@@ -14,6 +14,8 @@
 */
 </script>
 <template>
-  <h1>Nested Named Views</h1>
-  <router-view />
+  <div>
+    <h1>Nested Named Views</h1>
+    <router-view />
+  </div>
 </template>

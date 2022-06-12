@@ -354,11 +354,13 @@ const router = createRouter({
         console.log(`PerRouteGuard : ${from.path} -> ${to.path}`)
         return true
       },
+      meta: { transition: "slide-right" },
     },
     {
       path: "/PerRouteGuard02",
       component: () => import("../views/RouterView05.vue"),
       beforeEnter: [removeQueryParams, removeHash],
+      meta: { transition: "slide-left" },
     },
     {
       path: "/RouteMetaFields",
@@ -461,6 +463,10 @@ router.afterEach((to, from, failure) => {
   )
 
   if (!failure) console.log("TODO Anything")
+
+  const toDepth = to.path.split("/").length
+  const fromDepth = from.path.split("/").length
+  to.meta.transition = toDepth < fromDepth ? "slide-right" : "slide-left"
 })
 router.onError((error, from, to) => {
   console.log(`router.onError : ${from.path} -> ${to.path}`)

@@ -1,28 +1,30 @@
 <template>
-  <h1>Navigation Guards</h1>
-  <div class="link">
-    <router-link to="/RouterView01?test=true"> return false </router-link>
-    <router-link to="/RouterView02?test=true">
-      return { name: 'MixinsAndExtendsView' }
-    </router-link>
-    <router-link to="/RouterView03?test=true">
-      /MixinsAndExtendsView
-    </router-link>
-    <router-link to="/RouterView04?test=true">
-      new Error("Error!!!")
-    </router-link>
-    <router-link to="/PerRouteGuard01?test=true">
-      /PerRouteGuard01
-    </router-link>
-    <router-link to="/PerRouteGuard02?test=true">
-      /PerRouteGuard02
-    </router-link>
-    <router-link to="/RouterView06?test=true&queryString=1">
-      In-Component Guards queryString=1
-    </router-link>
-    <router-link to="/RouterView06?test=true&queryString=2">
-      In-Component Guards queryString=2
-    </router-link>
+  <div>
+    <h1>Navigation Guards</h1>
+    <div class="link">
+      <router-link to="/RouterView01?test=true"> return false </router-link>
+      <router-link to="/RouterView02?test=true">
+        return { name: 'MixinsAndExtendsView' }
+      </router-link>
+      <router-link to="/RouterView03?test=true">
+        /MixinsAndExtendsView
+      </router-link>
+      <router-link to="/RouterView04?test=true">
+        new Error("Error!!!")
+      </router-link>
+      <router-link to="/PerRouteGuard01?test=true">
+        /PerRouteGuard01
+      </router-link>
+      <router-link to="/PerRouteGuard02?test=true">
+        /PerRouteGuard02
+      </router-link>
+      <router-link to="/RouterView06?test=true&queryString=1">
+        In-Component Guards queryString=1
+      </router-link>
+      <router-link to="/RouterView06?test=true&queryString=2">
+        In-Component Guards queryString=2
+      </router-link>
+    </div>
   </div>
 </template>
 <script>
