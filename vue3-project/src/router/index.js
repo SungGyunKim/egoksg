@@ -365,6 +365,21 @@ const router = createRouter({
       component: () => import("../views/RouterView05.vue"),
       meta: { requiresAuth: true },
     },
+    /*
+      1) Fetching After Navigation
+        - created() hook 에서 route의 파라미터를 watch하여 데이터를 조회
+        - 화면이 그려진 이후이기 때문에 사용자는 데이터 조회의 시작과 끝을 알 수 있다.
+      2) Fetching Before Navigation
+        - beforeRouteEnter에서 데이터 조회이후 next()를 호출한다.
+        - beforeRouteUpdate에서 파라미터 변경에 대비하기 위해 데이터를 조회한다.
+      ref) https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-after-navigation
+      ref) https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-before-navigation
+    */
+    {
+      path: "/RouteDataFetching",
+      component: () => import("../views/RouterView06.vue"),
+      meta: { requiresAuth: true },
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
