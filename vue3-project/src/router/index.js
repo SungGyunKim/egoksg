@@ -2,7 +2,24 @@ import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import NotFoundView from "../views/NotFoundView.vue"
 
+function removeQueryParams(to) {
+  if (Object.keys(to.query).length)
+    return { path: to.path, query: {}, hash: to.hash }
+}
+
+function removeHash(to) {
+  if (to.hash) return { path: to.path, query: to.query, hash: "" }
+}
+
 const router = createRouter({
+  /*
+    createWebHashHistory는 브라우저 내에서 처리되기 때문에 URL의 변경을 서버에 보내지 않는 장점이 있다.
+    그러나 이 방식은 SEO에 좋은 방식이 아니므로 createWebHashHistory를 사용하기를 권장한다.
+    createWebHashHistory는 HTML5에서 지원하는 history mode이다.
+    만약 SSR 방식을 사용한다면 createMemoryHistory를 사용한다.
+
+    ref) https://router.vuejs.org/guide/essentials/history-mode.html
+  */
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -316,6 +333,33 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/RouterView06",
+      name: "RouterView06",
+      component: () => import("../views/RouterView06.vue"),
+      beforeEnter: (to, from) => {
+        console.log(`PerRouteGuard : ${from.path} -> ${to.path}`)
+        return true
+      },
+    },
+    /*
+      beforeEnter를 사용하여 특정 route의 Guard를 할 수 있다.
+      호출 순서는 다음과 같다.
+      router.beforeEach > beforeEnter > component의 beforeRouteEnter > router.beforeResolve
+     */
+    {
+      path: "/PerRouteGuard01",
+      component: () => import("../views/RouterView05.vue"),
+      beforeEnter: (to, from) => {
+        console.log(`PerRouteGuard : ${from.path} -> ${to.path}`)
+        return true
+      },
+    },
+    {
+      path: "/PerRouteGuard02",
+      component: () => import("../views/RouterView05.vue"),
+      beforeEnter: [removeQueryParams, removeHash],
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },
@@ -324,9 +368,73 @@ const router = createRouter({
   sensitive: true, // 대소문자을 구별한다.
 })
 
-router.resolve({
-  name: "not-found",
-  params: { pathMatch: ["not", "found"] },
-}).href // '/not/found'
+// https://beomy.tistory.com/75
+// ref) https://router.vuejs.org/guide/advanced/navigation-guards.html
+router.beforeEach(async (to, from /*, next*/) => {
+  console.log(`router.beforeEach : ${from.path} -> ${to.path}`)
+
+  if (Object.prototype.hasOwnProperty.call(to.query, "test")) {
+    /*
+      false를 return하면 빈 화면이 나온다.
+      그러므로 return false보다 접근 불가 화면으로 보내는 것이 맞을 거 같다.
+    */
+    if (to.path == "/RouterView01") return false
+    /*
+      Object를 return하면 route.push()와 동일하다.
+      즉, history가 남기 때문에 뒤로 가기하면 이전 화면으로 간다.
+    */
+    if (to.path == "/RouterView02") return { name: "MixinsAndExtendsView" }
+    /*
+      String을 return하면 path(/로 시작), name에 맞는 화면으로 이동한다.
+    */
+    if (to.path == "/RouterView03") return "MixinsAndExtendsView"
+    /*
+      new Error()을 발생시키면 router.onError()에서 잡을 수 있다.
+    */
+    if (to.path == "/RouterView04") throw new Error("Error!!!")
+    /*
+      next()  : 다음 훅으로 이동합니다.
+      next(false) : 현재 네비게이션을 종료합니다.
+      next('/') 또는 next({ path: '/' }) : 인자로 전달된 경로로 이동합니다.
+      next(error) : (2.4.0 이후) next 함수에 전달된 값이 Error 인스턴스이면, 네비게이션이 중지되고, 에러는 router.onError()의 콜백에 전달됩니다.
+      함수 인자로 next()를 받으면 조건에 걸리지 않더라고 기본적으로 next()을 호출해야 한다.
+    */
+    /*
+    if (to.path == "/RouterView05") {
+      next(new Error("Error!!!"))
+    }
+    */
+  }
+
+  return true
+})
+/*
+  beforeResolve는 beforeEach와 같이 Global Navigation Guards로 사용할 수 있습니다.
+  beforeEach외 다른 점은 접근하고자 하는 컴포넌트의 guards가 통과되어야 하고
+  비동기 라우트 컴포넌트가 만들어지면 호출된다.
+
+  ref) https://router.vuejs.org/guide/advanced/navigation-guards.html#global-resolve-guards
+*/
+router.beforeResolve((to, from) => {
+  console.log(`router.beforeResolve : ${from.path} -> ${to.path}`)
+})
+/*
+  Global Navigation Guards들이 호출되고 afterEach hook이 호출됩니다.
+  여기서는 analytics url에 보내거나 failure를 활용할 수 있습니다.
+  failure에 자세한 내용은 다음 참고를 확인하십시오.
+
+  ref) https://router.vuejs.org/guide/advanced/navigation-guards.html#global-resolve-guards
+  ref) https://router.vuejs.org/guide/advanced/navigation-failures.html
+*/
+router.afterEach((to, from, failure) => {
+  console.log(
+    `router.afterEach : ${from.path} -> ${to.path}, failure: ${failure.message}`
+  )
+
+  if (!failure) console.log("TODO Anything")
+})
+router.onError((error, from, to) => {
+  console.log(`router.onError : ${from.path} -> ${to.path}`)
+})
 
 export default router

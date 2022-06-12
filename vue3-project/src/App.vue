@@ -1,6 +1,6 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "@/components/HelloWorld.vue";
+import { RouterLink, RouterView } from "vue-router"
+import HelloWorld from "@/components/HelloWorld.vue"
 </script>
 
 <template>
@@ -29,8 +29,12 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/TemplateRefsView">TemplateRefsView</RouterLink>
         <RouterLink to="/SlotsView">SlotsView</RouterLink>
         <RouterLink to="/ProvideinjectView">ProvideinjectView</RouterLink>
-        <RouterLink to="/DynamicComponentsView">DynamicComponentsView</RouterLink>
-        <RouterLink to="/FallthroughAttributesView">FallthroughAttributesView</RouterLink>
+        <RouterLink to="/DynamicComponentsView">
+          DynamicComponentsView
+        </RouterLink>
+        <RouterLink to="/FallthroughAttributesView">
+          FallthroughAttributesView
+        </RouterLink>
         <RouterLink to="/AsyncComponentsView">AsyncComponentsView</RouterLink>
         <RouterLink to="/TransitionView">TransitionView</RouterLink>
         <RouterLink to="/TransitionGroupView">TransitionGroupView</RouterLink>
@@ -38,14 +42,23 @@ import HelloWorld from "@/components/HelloWorld.vue";
         <RouterLink to="/SuspenseView">SuspenseView</RouterLink>
         <RouterLink to="/ImmutableDataView">ImmutableDataView</RouterLink>
         <RouterLink to="/XStateView">XStateView</RouterLink>
-        <RouterLink to="/NamespacedComponentsView">NamespacedComponentsView</RouterLink>
+        <RouterLink to="/NamespacedComponentsView">
+          NamespacedComponentsView
+        </RouterLink>
         <RouterLink to="/CSSFeaturesView">CSSFeaturesView</RouterLink>
         <RouterLink to="/MixinsAndExtendsView">MixinsAndExtendsView</RouterLink>
         <RouterLink to="/RouterView01">RouterView01(Basic)</RouterLink>
         <RouterLink to="/RouterView02">RouterView02(Nested Views)</RouterLink>
-        <RouterLink to="/RouterView03">RouterView03(Nested Named Views)</RouterLink>
-        <RouterLink to="/RouterView04">RouterView04(Redirect and Alias)</RouterLink>
+        <RouterLink to="/RouterView03">
+          RouterView03(Nested Named Views)
+        </RouterLink>
+        <RouterLink to="/RouterView04">
+          RouterView04(Redirect and Alias)
+        </RouterLink>
         <RouterLink to="/RouterView05">RouterView05(Pass Props)</RouterLink>
+        <RouterLink to="/RouterView06">
+          RouterView06(Navigation Guards)
+        </RouterLink>
       </nav>
     </div>
   </header>
