@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import NotFoundView from "../views/NotFoundView.vue";
+import { createRouter, createWebHistory } from "vue-router"
+import HomeView from "../views/HomeView.vue"
+import NotFoundView from "../views/NotFoundView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -205,7 +205,8 @@ const router = createRouter({
               // components의 key들이 <router-view name="" />에 매핑된다.
               components: {
                 default: () => import("../views/RouterUserProfileView.vue"),
-                helper: () => import("../views/RouterUserProfilePreviewView.vue"),
+                helper: () =>
+                  import("../views/RouterUserProfilePreviewView.vue"),
               },
             },
           ],
@@ -213,15 +214,15 @@ const router = createRouter({
       ],
     },
     /*
-     [ Redirect and Alias ]
-      [ Redirect ]
-        - 일반적인 redirect 설정에서 component는 설정하지 않는다.
-        - nested routes를 redirect할 경에는 component를 설정해야 한다.
-        - redirect url은  Navigation Guards가 적용되지 않는다.
-      [ Alias ]
-        - URL은 다양해도 화면이 같다면 SEO 하나로 취급한다.
-      
-      ref) https://router.vuejs.org/guide/essentials/redirect-and-alias.html
+      [ Redirect and Alias ]
+        [ Redirect ]
+          - 일반적인 redirect 설정에서 component는 설정하지 않는다.
+          - nested routes를 redirect할 경에는 component를 설정해야 한다.
+          - redirect url은  Navigation Guards가 적용되지 않는다.
+        [ Alias ]
+          - URL은 다양해도 화면이 같다면 SEO 하나로 취급한다.
+        
+        ref) https://router.vuejs.org/guide/essentials/redirect-and-alias.html
      */
     {
       path: "/RouterView04",
@@ -249,8 +250,71 @@ const router = createRouter({
         return {
           path: "/RouterView03",
           query: { q: to.params.searchText },
-        };
+        }
       },
+    },
+    /*
+      https://router.vuejs.org/guide/essentials/passing-props.html#passing-props-to-route-components
+
+      * Passing Props to Route Components
+        > template에서 $route
+          - 컴포넌트의 <template>에서 $route.params.id로 사용할 수 있다.
+          - 주의) $route에 의존하기 때문에 강한 $route와 강한 결합하게 된다.
+                  그래서 $route와 느슨한 결합을 위해 props을 설정하여 컴포넌트에 전달하도록 한다.
+        > props 설정
+          > Single View
+            - route info에 component로 단일 컴포넌트가 설정되어 있을 경우, props를 true로 설정한다.
+          > Named views
+            - route info에 components 여러 컴포넌트가 설정되어 있을 경우, named view에 props를 true로 설정한다.
+          > Object mode
+            - Object를 사용하여 정적인 데이터를 props로 전달할 수 있다.
+          > Function mode
+            - function을 설정하면 첫 번째 인자로 route 객체가 넘어 온다.
+              이를통해 params, query, hash 등 다양한 정보를 가공하여 컴포넌트에 전달할 수 있다.
+    */
+    {
+      path: "/RouterView05",
+      component: () => import("../views/RouterView05.vue"),
+      children: [
+        {
+          path: "users/:id",
+          /*
+          // Passing Props to Route Components > props 설정 > Single View
+          component: () => import("../views/RouterUserView.vue"),
+          props: true,
+          */
+          /*
+          // Passing Props to Route Components > props 설정 > Named views
+          components: {
+            default: () => import("../views/RouterUserView.vue"),
+            user: () => import("../views/RouterUserView.vue"),
+          },
+          props: { default: true, user: false },
+          */
+          /*
+          // Passing Props to Route Components > props 설정 > Object mode
+          component: () => import("../views/RouterUserView.vue"),
+          props: { newsletterPopup: true },
+          */
+          // Passing Props to Route Components > props 설정 > Function mode
+          component: () => import("../views/RouterUserView.vue"),
+          props: (route) => ({ query: route.query.q }),
+          children: [
+            {
+              path: "",
+              component: () => import("../views/RouterUserHomeView.vue"),
+            },
+            {
+              path: "profile",
+              component: () => import("../views/RouterUserProfileView.vue"),
+            },
+            {
+              path: "posts",
+              component: () => import("../views/RouterUserPostsView.vue"),
+            },
+          ],
+        },
+      ],
     },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
@@ -258,11 +322,11 @@ const router = createRouter({
   ],
   strict: true, // URL 끝에 /를 넣을 수 없다.
   sensitive: true, // 대소문자을 구별한다.
-});
+})
 
 router.resolve({
   name: "not-found",
   params: { pathMatch: ["not", "found"] },
-}).href; // '/not/found'
+}).href // '/not/found'
 
-export default router;
+export default router

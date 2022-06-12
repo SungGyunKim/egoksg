@@ -9,7 +9,7 @@ module.exports = {
     "plugin:vue/vue3-essential",
     // https://eslint.org/docs/rules/
     "eslint:recommended",
-    // 
+    // https://prettier.io/docs/en/options.html
     "@vue/eslint-config-prettier",
   ],
   env: {
@@ -28,6 +28,8 @@ module.exports = {
       "error",
       {
         endOfLine: "auto",
+        semi: false,
+        singleQuote: false,
       },
     ],
   },

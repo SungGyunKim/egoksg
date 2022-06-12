@@ -1,9 +1,7 @@
 <template>
   <h1>Nested Views</h1>
   <div class="link">
-    <router-link to="/RouterView02">
-      /RouterView02
-    </router-link>
+    <router-link to="/RouterView02"> /RouterView02 </router-link>
     <router-link to="/RouterView02/users/eduardo">
       /RouterView02/users/eduardo
     </router-link>
