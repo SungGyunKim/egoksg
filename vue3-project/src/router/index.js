@@ -388,6 +388,45 @@ const router = createRouter({
   ],
   strict: true, // URL 끝에 /를 넣을 수 없다.
   sensitive: true, // 대소문자을 구별한다.
+  scrollBehavior(to, from, savedPosition) {
+    console.log(`scrollBehavior - ${from.path} -> ${to.path}`)
+    console.log(`scrollBehavior - savedPosition : `, savedPosition)
+    /* 
+    return { top: 0 }
+     */
+    /*
+    return {
+      el: ".view-container",
+      top: 0,
+    }
+     */
+
+    // 화면에서 벗어날 때 falsy value나 빈 object를 반환할 경우, 해당 화면의 위치(savedPosition)를 기억한다.
+    // 브라우저의 뒤로가기 / 앞으로가기 버튼 클릭시 해당 화면의 savedPosition를 준다.
+    /* 
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+    */
+    /*
+    // 동일한 페이지 이동으로 URL에 '#'이 생겼을때 해당 위치로 이동.
+    if (to.hash) {
+      return {
+        el: to.hash,
+      }
+    }
+    */
+    // 화면 전환시에 transition이 설정되어 있어 애니메이션 효과가 끝나고 스크롤 위치를 조정할 경우 사용한다.
+    // behavior를 'smooth'를 주어 부드운 이동을 할 수 있다.
+
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ el: ".view-container", left: 0, top: 0, behavior: "smooth" })
+      }, 500)
+    })
+  },
 })
 
 // https://beomy.tistory.com/75
