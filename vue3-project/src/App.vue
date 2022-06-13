@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router"
 import HelloWorld from "@/components/HelloWorld.vue"
+import AppLink from "@/components/AppLink.vue"
 </script>
 
 <template>
@@ -61,6 +62,15 @@ import HelloWorld from "@/components/HelloWorld.vue"
         </RouterLink>
         <RouterLink to="/RouteMetaFields"> Route Meta Fields </RouterLink>
         <RouterLink to="/RouteDataFetching"> Route Data Fetching </RouterLink>
+        <AppLink
+          to="/RouteDataFetching"
+          active-class="router-link-active router-link-exact-active"
+        >
+          AppLink - Route Data Fetching
+        </AppLink>
+        <AppLink to="https://www.naver.com/">
+          AppLink - isExternalLink
+        </AppLink>
       </nav>
     </div>
   </header>
