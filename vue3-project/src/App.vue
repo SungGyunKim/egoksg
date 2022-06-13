@@ -74,6 +74,9 @@ import AppLink from "@/components/AppLink.vue"
         <RouterLink to="/RouterNavigationFailuresView">
           Router Navigation Failures View
         </RouterLink>
+        <RouterLink to="/VuexCoreConceptsView">
+          Vuex Core Concepts View
+        </RouterLink>
       </nav>
     </div>
   </header>
@@ -91,7 +94,9 @@ import AppLink from "@/components/AppLink.vue"
       <RouterView v-slot="{ Component, route }">
         <transition :name="route.meta.transition || 'fade'" mode="out-in">
           <keep-alive>
-            <component :is="Component" />
+            <div>
+              <component :is="Component" />
+            </div>
           </keep-alive>
         </transition>
       </RouterView>
