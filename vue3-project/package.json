@@ -16,6 +16,7 @@
     "pinia": "^2.0.13",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14",
+    "vuex": "^4.0.2",
     "xstate": "^4.32.1"
   },
   "devDependencies": {
