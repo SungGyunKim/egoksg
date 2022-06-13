@@ -382,6 +382,10 @@ const router = createRouter({
       component: () => import("../views/RouterView06.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "/RouterNavigationFailuresView",
+      component: () => import("../views/RouterNavigationFailuresView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },

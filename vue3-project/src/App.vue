@@ -71,6 +71,9 @@ import AppLink from "@/components/AppLink.vue"
         <AppLink to="https://www.naver.com/">
           AppLink - isExternalLink
         </AppLink>
+        <RouterLink to="/RouterNavigationFailuresView">
+          Router Navigation Failures View
+        </RouterLink>
       </nav>
     </div>
   </header>
