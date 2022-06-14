@@ -1,4 +1,6 @@
-import { createStore } from "vuex"
+import { createStore, createLogger } from "vuex"
+import _ from "lodash"
+import createWebSocketPlugin from "./createWebSocketPlugin.js"
 import types from "./mutation-types"
 
 function getData() {
@@ -8,8 +10,62 @@ function getOtherData() {
   return Promise.resolve()
 }
 
+/*
+  Plugins
+
+  ref) https://vuex.vuejs.org/guide/plugins.html
+*/
+const myPlugin = (store) => {
+  // called when the store is initialized
+  store.subscribe((mutation, state) => {
+    // called after every mutation.
+    // The mutation comes in the format of `{ type, payload }`.
+    console.log(
+      "myPlugin' subscribe -",
+      " mutation : ",
+      mutation,
+      " state : ",
+      state
+    )
+  })
+}
+
+/*
+  Committing Mutations Inside Plugins
+
+  Socket의 data 송/수신 이벤트 헨들러를 달아 state와 동기화 되도록 한다.
+  클로저를 이용
+
+  ref) https://vuex.vuejs.org/guide/plugins.html#committing-mutations-inside-plugins
+*/
+const socket = {}
+const webSocketPlugin = createWebSocketPlugin(socket)
+
+/*
+  Taking State Snapshots
+
+  이전 상태를 가지고 있고 싶으면 변경될 때 스냅샷을 한다.
+
+  ref) https://vuex.vuejs.org/guide/plugins.html#taking-state-snapshots
+*/
+const myPluginWithSnapshot = (store) => {
+  let prevState = _.cloneDeep(store.state)
+  store.subscribe((mutation, state) => {
+    let nextState = _.cloneDeep(state)
+
+    // compare `prevState` and `nextState`...
+
+    // save state for next mutation
+    prevState = nextState
+  })
+}
+
 // Create a new store instance.
 export const store = createStore({
+  plugins:
+    process.env.NODE_ENV !== "production"
+      ? [createLogger(), myPlugin, webSocketPlugin, myPluginWithSnapshot]
+      : [],
   // state는
   state: {
     id: "egoksg",
@@ -25,7 +81,8 @@ export const store = createStore({
     doneTodos(state) {
       return state.todos.filter((todo) => todo.done)
     },
-    doneTodosCount(state, getters) {
+    // rootState는 모듈 한정
+    doneTodosCount(state, getters, rootState) {
       return getters.doneTodos.length
     },
     getTodoById: (state) => (id) => {
@@ -72,7 +129,7 @@ export const store = createStore({
    */
   actions: {
     increment1(context) {
-      // context.state, context.getters, context.dispatch을 사용할 수 있다.
+      // context.state, context.getters, context.dispatch, context.rootState(module 한정)을 사용할 수 있다.
       context.commit("increment")
     },
     incrementPayloadObjectAsync({ commit }, payload) {
