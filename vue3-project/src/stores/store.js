@@ -62,6 +62,15 @@ const myPluginWithSnapshot = (store) => {
 
 // Create a new store instance.
 export const store = createStore({
+  /*
+    Strict Mode
+    
+    strict 값이 true인데 mutations을 통하지 않고 state를 수정하려고 하면 에러를 뱉어낸다.
+    VuexCoreConceptsView 컴포넌트에서 strictId을 살펴보자
+    
+    ref) https://vuex.vuejs.org/guide/strict.html
+  */
+  strict: process.env.NODE_ENV !== "production",
   plugins:
     process.env.NODE_ENV !== "production"
       ? [createLogger(), myPlugin, webSocketPlugin, myPluginWithSnapshot]

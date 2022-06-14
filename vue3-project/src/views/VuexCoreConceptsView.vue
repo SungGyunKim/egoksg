@@ -1,5 +1,7 @@
 <template>
-  <div>props > id : {{ id }}</div>
+  <div>
+    props > id : {{ id }} <input type="text" name="id" v-model="strictId" />
+  </div>
   <div>props > name : {{ name }}</div>
   <div>props > count : {{ count }}</div>
   <div>props > countPlusLocalState : {{ countPlusLocalState }}</div>
@@ -112,6 +114,18 @@ export default {
     }),
     // mapGetters를 통해 store의 getters를 빠르게 가지고 올 수 있다.
     ...mapGetters(["doneTodosCount"]),
+    strictId: {
+      get() {
+        return this.$store.state.id
+      },
+      set(value) {
+        debugger
+        // Uncaught Error: [vuex] do not mutate vuex store state outside mutation handlers. 발생
+        this.$store.state.id = value
+        // 해결책 ref) https://beomy.tistory.com/90
+        // this.$store.commit("id", value)
+      },
+    },
   },
   methods: {
     onMutationPayloadClick1(mutation, payload) {

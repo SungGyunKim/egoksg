@@ -1,7 +1,7 @@
 import { createStore } from "vuex"
 import moduleA from "./moduleA.js"
 import moduleB from "./moduleB.js"
-import moduleNamespace from "../../moduleNamespace.js"
+import moduleNamespace from "./moduleNamespace.js"
 
 /*
   각 모듈은 state, mutations, actions, getters 그리고 modules 가지고 있다.
