@@ -390,6 +390,10 @@ const router = createRouter({
       path: "/VuexCoreConceptsView",
       component: () => import("../views/VuexCoreConceptsView.vue"),
     },
+    {
+      path: "/AxiosView",
+      component: () => import("../views/AxiosView.vue"),
+    },
     // 잘못된 경로 진한 경우
     // ref) https://router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes
     { path: "/:pathMatch(.*)*", name: "not-found", component: NotFoundView },

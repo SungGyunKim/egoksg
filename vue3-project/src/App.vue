@@ -77,6 +77,7 @@ import AppLink from "@/components/AppLink.vue"
         <RouterLink to="/VuexCoreConceptsView">
           Vuex Core Concepts View
         </RouterLink>
+        <RouterLink to="/AxiosView"> Axios View </RouterLink>
       </nav>
     </div>
   </header>
