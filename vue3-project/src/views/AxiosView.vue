@@ -70,11 +70,7 @@ function getTest() {
   }
 
   axios.get(buildURL("/users", params)).then(function (response) {
-    console.log("response.data : ", response.data)
-    console.log("response.status : ", response.status)
-    console.log("response.statusText : ", response.statusText)
-    console.log("response.headers : ", response.headers)
-    console.log("response.config : ", response.config)
+    console.log("response : ", response)
   })
 }
 
@@ -85,11 +81,7 @@ function postTest() {
   }
 
   axios.post(`/users`, params).then(function (response) {
-    console.log("response.data : ", response.data)
-    console.log("response.status : ", response.status)
-    console.log("response.statusText : ", response.statusText)
-    console.log("response.headers : ", response.headers)
-    console.log("response.config : ", response.config)
+    console.log("postTest - response : ", response)
   })
 }
 
