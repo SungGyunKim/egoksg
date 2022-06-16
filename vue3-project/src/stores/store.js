@@ -60,11 +60,103 @@ const myPluginWithSnapshot = (store) => {
   })
 }
 
+const state = {
+  id: "egoksg",
+  name: "김성균",
+  count: 1,
+  todos: [
+    { id: 1, text: "...", done: true },
+    { id: 2, text: "...", done: false },
+  ],
+}
+
+// 테스트를 위해 getters, mutations, actions를 개별적으로 내보내는 것이 좋다.
+// ref) https://vuex.vuejs.org/guide/testing.html
+export const getters = {
+  doneTodos(state) {
+    return state.todos.filter((todo) => todo.done)
+  },
+  // rootState는 모듈 한정
+  doneTodosCount(state, getters, rootState) {
+    return getters.doneTodos.length
+  },
+  getTodoById: (state) => (id) => {
+    return state.todos.find((todo) => todo.id === id)
+  },
+}
+
+export const mutations = {
+  increment(state) {
+    state.count++
+  },
+  /*
+    Commit with Payload
+
+    ref) https://vuex.vuejs.org/guide/mutations.html#commit-with-payload
+  */
+  incrementPayloadValue(state, payload) {
+    state.count += payload
+  },
+  /*
+    Object-Style Commit
+
+    ref) https://vuex.vuejs.org/guide/mutations.html#object-style-commit
+  */
+  incrementPayloadObject(state, payload) {
+    state.count += payload.amount
+  },
+  /*
+    Using Constants for Mutation Types
+
+    ref) https://vuex.vuejs.org/guide/mutations.html#using-constants-for-mutation-types
+  */
+  [types.INCREMENT](state) {
+    state.count++
+  },
+}
+
+export const actions = {
+  increment1(context) {
+    // context.state, context.getters, context.dispatch, context.rootState(module 한정)을 사용할 수 있다.
+    context.commit("increment")
+  },
+  incrementPayloadObjectAsync({ commit }, payload) {
+    setTimeout(() => {
+      commit("incrementPayloadObject", payload)
+    }, 3000)
+  },
+  // 여러 비동기 작업을 할 때, Promise를 return하여 처리한다.
+  // ref) https://vuex.vuejs.org/guide/actions.html#dispatching-actions-in-components
+  /*
+  actionA({ commit }) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        commit("someMutation")
+        resolve()
+      }, 1000)
+    })
+  },
+  actionB({ dispatch, commit }) {
+    return dispatch("actionA").then(() => {
+      commit("someOtherMutation")
+    })
+  },
+  */
+  // 위 내용을 async와 await를 사용하여 간단히 처리할 수 있다.
+  async actionA({ commit }) {
+    commit("gotData", await getData())
+  },
+  async actionB({ dispatch, commit }) {
+    await dispatch("actionA") // wait for `actionA` to finish
+    commit("gotOtherData", await getOtherData())
+  },
+}
+
 // Create a new store instance.
 export const store = createStore({
   /*
     Strict Mode
-    
+
     strict 값이 true인데 mutations을 통하지 않고 state를 수정하려고 하면 에러를 뱉어낸다.
     VuexCoreConceptsView 컴포넌트에서 strictId을 살펴보자
     
@@ -76,100 +168,18 @@ export const store = createStore({
       ? [createLogger(), myPlugin, webSocketPlugin, myPluginWithSnapshot]
       : [],
   // state는
-  state: {
-    id: "egoksg",
-    name: "김성균",
-    count: 1,
-    todos: [
-      { id: 1, text: "...", done: true },
-      { id: 2, text: "...", done: false },
-    ],
-  },
+  state,
   // state를 사용하는 컴포넌트의 computed에서 자주 사용된다면 getters에 미리 정의할 수 있다.
-  getters: {
-    doneTodos(state) {
-      return state.todos.filter((todo) => todo.done)
-    },
-    // rootState는 모듈 한정
-    doneTodosCount(state, getters, rootState) {
-      return getters.doneTodos.length
-    },
-    getTodoById: (state) => (id) => {
-      return state.todos.find((todo) => todo.id === id)
-    },
-  },
+  getters,
   /*
     mutations에 있는 함수들은 모두 동기적으로 이루어져야 한다.
 
     ref) https://vuex.vuejs.org/guide/mutations.html#mutations-must-be-synchronous
    */
-  mutations: {
-    increment(state) {
-      state.count++
-    },
-    /*
-      Commit with Payload
-
-      ref) https://vuex.vuejs.org/guide/mutations.html#commit-with-payload
-    */
-    incrementPayloadValue(state, payload) {
-      state.count += payload
-    },
-    /*
-      Object-Style Commit
-
-      ref) https://vuex.vuejs.org/guide/mutations.html#object-style-commit
-    */
-    incrementPayloadObject(state, payload) {
-      state.count += payload.amount
-    },
-    /*
-      Using Constants for Mutation Types
-
-      ref) https://vuex.vuejs.org/guide/mutations.html#using-constants-for-mutation-types
-    */
-    [types.INCREMENT](state) {
-      state.count++
-    },
-  },
+  mutations,
   /*
     actions에서는 비동기 작업을 하고 데이터를 mutations에 전달합니다.
     context는 store 객체가 아니면 Modules와 관련이 있다.
    */
-  actions: {
-    increment1(context) {
-      // context.state, context.getters, context.dispatch, context.rootState(module 한정)을 사용할 수 있다.
-      context.commit("increment")
-    },
-    incrementPayloadObjectAsync({ commit }, payload) {
-      setTimeout(() => {
-        commit("incrementPayloadObject", payload)
-      }, 3000)
-    },
-    // 여러 비동기 작업을 할 때, Promise를 return하여 처리한다.
-    // ref) https://vuex.vuejs.org/guide/actions.html#dispatching-actions-in-components
-    /*
-    actionA({ commit }) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          commit("someMutation")
-          resolve()
-        }, 1000)
-      })
-    },
-    actionB({ dispatch, commit }) {
-      return dispatch("actionA").then(() => {
-        commit("someOtherMutation")
-      })
-    },
-    */
-    // 위 내용을 async와 await를 사용하여 간단히 처리할 수 있다.
-    async actionA({ commit }) {
-      commit("gotData", await getData())
-    },
-    async actionB({ dispatch, commit }) {
-      await dispatch("actionA") // wait for `actionA` to finish
-      commit("gotOtherData", await getOtherData())
-    },
-  },
+  actions,
 })
