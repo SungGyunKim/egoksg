@@ -4,6 +4,7 @@ Supplier<T>         T get()              인자를 받지 않고 로직을 통�
 Predicate<T>        boolean test(T t)    인자 t를 받아서 로직을 통해 boolean을 반환한다.                    if            판단하다
 Function<T, R>      R apply(T t)         인자 t를 받아 로직을 통해 R을 반환한다.                            function      처리하다
 XXXOperator         applyXXX             피연산자(operend)를 받아 xxx연산(operator)을 결과를 반환한다.      operator      연산하다
+Comparator          compare(T, T)        2개의 인자를 받아 비교하여 int를 반환한다.                         compare       비교하다
 Consumer<T>         void accept(T t)     인자 t를 받아 로직을 통해 void를 반환한다.                         end           소비하다(소비자)
 
 ref) https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html
