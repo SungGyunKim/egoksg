@@ -1,0 +1,23 @@
+[ java.util.function ]
+Interface           method               설명                                                            키워드
+Supplier<T>         T get()              인자를 받지 않고 로직을 통해 값을 반환한다.                        new           공급하다(공급자)
+Predicate<T>        boolean test(T t)    인자 t를 받아서 로직을 통해 boolean을 반환한다.                    if            판단하다
+Function<T, R>      R apply(T t)         인자 t를 받아 로직을 통해 R을 반환한다.                            function      처리하다
+XXXOperator         applyXXX             피연산자(operend)를 받아 xxx연산(operator)을 결과를 반환한다.      operator      연산하다
+Comparator          compare(T, T)        2개의 인자를 받아 비교하여 int를 반환한다.                         compare       비교하다
+Consumer<T>         void accept(T t)     인자 t를 받아 로직을 통해 void를 반환한다.                         end           소비하다(소비자)
+
+ref) https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html
+
+[ 예제 ]
+1) 2000개의 숫자를 랜덤하게 생성(new)한다. -> Supplier
+2) 만약(if)  2000개의 숫자 중 짝수인지 판단하여 맞으면 추려낸다 -> Predicate
+3) 추려낸 숫자 중 다음 조건을 처리하여 반환한다. -> Function
+    if 0 <= 숫자 < 10000
+       return 0
+    else
+       return 숫자
+4) 처리된 숫자(operend)를 2배로 곱하여 연산(operator)하여 반환한다. -> XXXOperator
+    return 숫자*2
+5) 모든 처리가 끝난 숫자는 출력하고 끝(end)낸다. -> Consumer
+   print(숫자)
